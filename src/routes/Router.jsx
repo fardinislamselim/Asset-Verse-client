@@ -1,5 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import RootLayout from "../layout/RootLayout";
+import Home from "../pages/Home/Home";
+import Register from "../pages/register/Register";
 
 export const router = createBrowserRouter([
   {
@@ -8,8 +10,9 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <div className="text-2xl font-bold text-primary">Asset Vers</div>,
+        element: <Home />,
       },
+      { path: "register", element: <Register /> },
     ],
   },
 ]);
