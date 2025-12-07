@@ -1,7 +1,7 @@
 import { useState } from "react";
 import EmployeeForm from "../../components/Form/EmployeeForm";
 import HrForm from "../../components/Form/HrForm";
-import { motion, AnimatePresence } from "framer-motion";
+import {motion,  AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import { FaUserTie, FaUser } from "react-icons/fa";
 import registerAnimation from "../../assets/Lottie/register.json";
