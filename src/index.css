@@ -1,0 +1,92 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* ----------------------------------
+   LIGHT THEME (Default)
+-----------------------------------*/
+@plugin "daisyui/theme" {
+  name: "assetverse-light";
+  default: true; /* Light must be default */
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-primary: #2563eb;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #6366f1;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #14b8a6;
+  --color-accent-content: #ffffff;
+
+  --color-base-100: #ffffff; /* Background */
+  --color-base-200: #f8fafc; /* Card BG */
+  --color-base-300: #e2e8f0; /* Border */
+  --color-base-content: #0f172a; /* Heading Text */
+
+  --color-neutral: #334155;
+  --color-neutral-content: #ffffff;
+
+  --color-info: #2563eb;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Typography */
+  --color-body-text: #334155;
+
+  /* Radius */
+  --radius-selector: 1rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+
+  /* Effects */
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* ----------------------------------
+   DARK THEME (Auto For Dark Mode)
+-----------------------------------*/
+@plugin "daisyui/theme" {
+  name: "assetverse-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-primary: #3b82f6;
+  --color-primary-content: #0f172a;
+
+  --color-secondary: #818cf8;
+  --color-secondary-content: #0f172a;
+
+  --color-accent: #2dd4bf;
+  --color-accent-content: #0f172a;
+
+  --color-base-100: #0f172a; /* Background */
+  --color-base-200: #1e293b; /* Card BG */
+  --color-base-300: #334155; /* Border */
+  --color-base-content: #f1f5f9; /* Heading Text */
+
+  --color-neutral: #cbd5e1;
+  --color-neutral-content: #0f172a;
+
+  --color-info: #3b82f6;
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+
+  /* Typography */
+  --color-body-text: #cbd5e1;
+
+  /* Radius */
+  --radius-selector: 1rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+
+  /* Effects */
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
