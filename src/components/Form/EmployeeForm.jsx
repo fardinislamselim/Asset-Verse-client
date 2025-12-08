@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import axios from "axios";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
@@ -11,7 +11,8 @@ import {
   FaLock,
   FaUser,
 } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import useAuth from "../../hook/useAuth";
 import useAxiosSecure from "../../hook/useAxiosSecure";
 
@@ -21,6 +22,10 @@ const EmployeeForm = () => {
 
   const [uploading, setUploading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const {
     register,
@@ -36,27 +41,20 @@ const EmployeeForm = () => {
     import.meta.env.VITE_IMGBB_API_KEY
   }`;
 
-  // Firebase Error Handler
+  // ✅ Professional Firebase Error Handler
   const showFirebaseError = (error) => {
     let message = "Something went wrong ❌";
 
     if (error?.code) {
-      switch (error.code) {
-        case "auth/email-already-in-use":
-          message = "This email is already registered 📧";
-          break;
-        case "auth/invalid-email":
-          message = "Invalid email address ❌";
-          break;
-        case "auth/weak-password":
-          message = "Password must be at least 6 characters 🔒";
-          break;
-        case "auth/network-request-failed":
-          message = "Network error, check your internet 🌐";
-          break;
-        default:
-          message = error.message || message;
-      }
+      const errorMap = {
+        "auth/email-already-in-use": "This email is already registered 📧",
+        "auth/invalid-email": "Invalid email address ❌",
+        "auth/weak-password": "Password must be at least 6 characters 🔒",
+        "auth/network-request-failed":
+          "Network error, check your internet 🌐",
+      };
+
+      message = errorMap[error.code] || error.message || message;
     } else {
       message = error.message || message;
     }
@@ -64,62 +62,70 @@ const EmployeeForm = () => {
     toast.error(message);
   };
 
-  // FINAL SUBMIT FUNCTION (With Backend Save)
+  // ✅ Professional Submit Handler
   const onSubmit = async (data) => {
     try {
       setUploading(true);
 
-      const profileImg = data.profilePicture[0];
+      const profileImg = data.profilePicture?.[0];
+      if (!profileImg) {
+        toast.error("Profile image is required");
+        return;
+      }
 
-      // 1. Firebase Registration
+      // 1️⃣ Firebase Registration
       await registerUser(data.email, data.password);
 
-      // 2. Upload Image
+      // 2️⃣ Upload Image to ImgBB
       const formData = new FormData();
       formData.append("image", profileImg);
 
       const imgRes = await axios.post(image_API_URL, formData);
+
+      if (!imgRes.data?.data?.url) {
+        throw new Error("Image upload failed");
+      }
+
       const photoURL = imgRes.data.data.url;
 
-      // 3. Update Firebase Profile
+      // 3️⃣ Update Firebase Profile
       await updateUserProfile({
         displayName: data.name,
         photoURL,
       });
 
-      // 4. Prepare Employee Data for Backend
+      // 4️⃣ Prepare Employee Data
       const employeeInfo = {
-        name: data.name,
-        email: data.email,
+        name: data.name.trim(),
+        email: data.email.toLowerCase(),
         photoURL,
         dateOfBirth: data.dateOfBirth,
         role: "employee",
         createdAt: new Date(),
+        status: "active",
       };
 
-      // 5. Save Employee to Backend
+      // 5️⃣ Save to Backend
       const res = await axiosSecure.post("/users", employeeInfo);
 
       if (res.data?.insertedId || res.data?.acknowledged) {
         toast.success("Employee Registered Successfully ✅");
         reset();
+        navigate(from, { replace: true });
+      } else if (res.data?.message === "User already exists") {
+        toast.error("This email already exists in database");
       } else {
-        toast.error("Employee saved but unexpected response ⚠️");
+        toast.error("Unexpected server response ⚠️");
       }
     } catch (error) {
       console.error("FULL ERROR:", error);
 
-      // Firebase error
       if (error?.code) {
         showFirebaseError(error);
-      }
-      // Backend Axios Error
-      else if (error?.response) {
+      } else if (error?.response) {
         toast.error(error.response?.data?.message || "Backend server error ❌");
-      }
-      // Network / CORS Error
-      else {
-        toast.error("Network error or server not responding ❌");
+      } else {
+        toast.error("Network or unknown server error ❌");
       }
     } finally {
       setUploading(false);
@@ -127,7 +133,7 @@ const EmployeeForm = () => {
   };
 
   return (
-    <div className="p-6 bg-base-200 rounded-2xl shadow-xl border border-base-300">
+    <div className="p-6 bg-base-200 rounded-2xl shadow-xl border border-base-300 max-w-lg mx-auto mt-8">
       <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
         <FaUser className="text-primary" /> Employee Registration
       </h2>
@@ -163,7 +169,10 @@ const EmployeeForm = () => {
               type="text"
               placeholder="Full Name"
               className={`input input-bordered w-full pl-10 ${focusStyle}`}
-              {...register("name", { required: "Full Name is required" })}
+              {...register("name", {
+                required: "Full Name is required",
+                minLength: { value: 3, message: "Minimum 3 characters required" },
+              })}
             />
           </div>
           {errors.name && (
@@ -183,7 +192,8 @@ const EmployeeForm = () => {
               {...register("email", {
                 required: "Email is required",
                 pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  value:
+                    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   message: "Invalid email address",
                 },
               })}
@@ -238,7 +248,9 @@ const EmployeeForm = () => {
             />
           </div>
           {errors.dateOfBirth && (
-            <p className="text-error text-sm">{errors.dateOfBirth.message}</p>
+            <p className="text-error text-sm">
+              {errors.dateOfBirth.message}
+            </p>
           )}
         </div>
 
@@ -248,7 +260,14 @@ const EmployeeForm = () => {
           disabled={uploading}
           className="btn btn-primary w-full mt-4"
         >
-          {uploading ? "Registering..." : "Register as Employee"}
+          {uploading ? (
+            <>
+              <span className="loading loading-spinner"></span>
+              Registering...
+            </>
+          ) : (
+            "Register as Employee"
+          )}
         </button>
       </form>
 

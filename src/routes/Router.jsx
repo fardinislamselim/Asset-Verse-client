@@ -3,6 +3,8 @@ import RootLayout from "../layout/RootLayout";
 import Home from "../pages/Home/Home";
 import Register from "../pages/register/Register";
 import Login from "../pages/Login/Login";
+import PrivateRoute from "./PrivateRoute";
+import HrDashboard from "../layout/HrDashboard";
 
 export const router = createBrowserRouter([
   {
@@ -15,6 +17,20 @@ export const router = createBrowserRouter([
       },
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
+    ],
+  },
+  {
+    path: "hr",
+    element: (
+      <PrivateRoute>
+        <HrDashboard></HrDashboard>
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "dashboard",
+        element: <h2 className="text-2xl">Hr Dashboard</h2>,
+      },
     ],
   },
 ]);

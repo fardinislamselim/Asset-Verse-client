@@ -1,14 +1,26 @@
+// LoginForm.jsx
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Link } from "react-router";
+// 🚩 UPDATE: useLink, useLocation, and useNavigate from 'react-router-dom'
+import { Link, useLocation, useNavigate } from "react-router";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import useAuth from "../../hook/useAuth";
+import React from "react"; // Explicitly imported
 
 const LoginForm = () => {
   const { signInUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  // 🚩 ADD: Hooks for Navigation
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // 🚩 FIXED CODE: Get the path from location.state.from.pathname
+  // If 'from' is undefined (e.g., user went directly to /login), default to home ('/')
+  const from = location.state?.from?.pathname || "/";
+
 
   const {
     register,
@@ -23,6 +35,10 @@ const LoginForm = () => {
     signInUser(data.email, data.password)
       .then(() => {
         toast.success("Login successful ✅");
+        
+        // 🚩 REDIRECT: Redirects user to the 'from' path or '/'
+        navigate(from, { replace: true });
+        
         setLoading(false);
       })
       .catch((err) => {
@@ -97,13 +113,20 @@ const LoginForm = () => {
           disabled={loading}
           className="btn btn-primary w-full mt-4"
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? (
+            <>
+              <span className="loading loading-spinner"></span>
+              Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
         </button>
       </form>
 
       <p className="text-sm text-center mt-4">
         Don't have an account?{" "}
-        <Link to="/register" className="text-primary font-semibold underline">
+        <Link to="/register" className="text-primary font-semibold underline hover:text-primary/80 transition">
           Register
         </Link>
       </p>
@@ -111,7 +134,7 @@ const LoginForm = () => {
       <p className="text-sm text-center mt-2">
         <Link
           to="/forgot-password"
-          className="text-primary font-semibold underline"
+          className="text-primary font-semibold underline hover:text-primary/80 transition"
         >
           Forgot Password?
         </Link>

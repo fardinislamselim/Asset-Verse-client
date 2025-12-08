@@ -27,24 +27,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [dropdownOpen]);
 
-  const navLinks = (
-    <>
-      <li>
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            isActive
-              ? "text-primary font-bold border-b-2 border-primary pb-1 rounded-[0px]"
-              : "text-base-content hover:text-primary transition-colors duration-200"
-          }
-        >
-          Home
-        </NavLink>
-      </li>
-      {/* Add more links here */}
-    </>
-  );
-
   const handleSignOut = () => {
     logOut()
       .then(() => {
@@ -54,17 +36,37 @@ const Navbar = () => {
       .catch((err) => toast.error("Failed to log out!", err.message));
   };
 
+  const navLinks = (
+    <>
+      <li>
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `px-3 py-1 rounded-md text-[16px] transition-all duration-200 ${
+              isActive
+                ? "text-primary font-semibold bg-primary/10"
+                : "text-base-content hover:text-primary"
+            }`
+          }
+        >
+          Home
+        </NavLink>
+      </li>
+    </>
+  );
+
   return (
-    <div className="bg-base-100 shadow-xl sticky top-0 z-50">
-      <Container className="navbar">
-        {/* Navbar Start: Logo + Mobile Menu */}
-        <div className="navbar-start">
+    <div className="backdrop-blur-xl bg-base-100/80 shadow-md sticky top-0 z-50 border-b border-base-300/40">
+      <Container className="navbar py-3">
+        
+        {/* Left Section */}
+        <div className="navbar-start gap-2">
           {/* Mobile Dropdown */}
           <div className="dropdown">
-            <div tabIndex={0} className="btn btn-ghost lg:hidden">
+            <button tabIndex={0} className="btn btn-ghost lg:hidden">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -76,55 +78,53 @@ const Navbar = () => {
                   d="M4 6h16M4 12h8m-8 6h16"
                 />
               </svg>
-            </div>
+            </button>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[999] mt-3 w-52 p-2 shadow-xl"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-xl z-[999] mt-3 w-56 p-3 shadow-xl border border-base-300/40"
             >
               {navLinks}
             </ul>
           </div>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center gap-2">
             <img
               src={logo}
               alt="Asset Verse"
-              className="w-10 h-10 md:w-14 md:h-14"
+              className="w-10 h-10 md:w-12 md:h-12"
             />
-            <h3 className="hidden sm:block text-base-content text-xl md:text-2xl font-extrabold tracking-tight">
+            <h3 className="hidden sm:block text-2xl font-extrabold tracking-tight text-base-content">
               Assets Verse
             </h3>
           </Link>
         </div>
 
-        {/* Navbar Center: Desktop Links */}
+        {/* Desktop Menu */}
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 gap-3 text-base font-medium">
+          <ul className="menu menu-horizontal px-1 gap-4 text-base font-medium">
             {navLinks}
           </ul>
         </div>
 
-        {/* Navbar End: Theme + Auth */}
-        <div className="navbar-end flex items-center gap-3">
+        {/* Right Section */}
+        <div className="navbar-end flex items-center gap-4">
           <ThemeToggle />
 
           {loading ? (
-            <span className="loading loading-ring loading-xl"></span>
+            <span className="loading loading-ring loading-lg"></span>
           ) : !user ? (
-            // Login Button
-            <Link to="/login" className="btn btn-primary btn-sm md:btn-md">
+            <Link to="/login" className="btn btn-primary btn-sm md:btn-md px-5">
               Login
             </Link>
           ) : (
-            // User Dropdown
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="btn btn-ghost btn-circle p-0 w-12 h-12 md:w-14 md:h-14 overflow-hidden transition-transform duration-200 hover:scale-105"
+                className="btn btn-ghost btn-circle w-12 h-12 overflow-hidden hover:scale-105 transition-transform"
               >
-                <div className="avatar w-full h-full p-3">
-                  <div className="w-full h-full rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <div className="avatar w-full h-full">
+                  <div className="w-full h-full rounded-full ring-2 ring-primary/60">
                     {user.photoURL ? (
                       <img
                         src={user.photoURL}
@@ -132,18 +132,18 @@ const Navbar = () => {
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <FaUserCircle className="w-full h-full text-base-content/80 p-1" />
+                      <FaUserCircle className="w-full h-full text-base-content/70" />
                     )}
                   </div>
                 </div>
               </button>
 
               {dropdownOpen && (
-                <ul className="absolute right-0 mt-3 w-48 bg-base-100 border border-base-300 rounded-lg shadow-2xl py-2 z-50 transition-opacity duration-300">
+                <ul className="absolute right-0 mt-3 w-56 bg-base-100 border border-base-300/40 rounded-xl shadow-2xl py-2 z-50 animate-fadeIn">
                   {/* User Info */}
-                  <li className="px-4 py-2 text-sm font-semibold text-base-content truncate border-b border-base-200 mb-1">
-                    {user.displayName || "User"}
-                    <p className="text-xs text-base-content/60 font-normal mt-1 truncate">
+                  <li className="px-4 py-2 border-b border-base-300/40">
+                    <p className="font-semibold">{user.displayName || "User"}</p>
+                    <p className="text-xs text-base-content/50 truncate">
                       {user.email}
                     </p>
                   </li>
@@ -152,18 +152,18 @@ const Navbar = () => {
                   <li>
                     <Link
                       to="/dashboard"
-                      className="block px-4 py-2 hover:bg-base-200 w-full transition-colors"
+                      className="block px-4 py-2 hover:bg-base-200 rounded-lg transition-colors"
                       onClick={() => setDropdownOpen(false)}
                     >
                       Dashboard
                     </Link>
                   </li>
 
-                  {/* Sign Out */}
+                  {/* Logout */}
                   <li>
                     <button
                       onClick={handleSignOut}
-                      className="w-full cursor-pointer text-left px-4 py-2 hover:bg-error/10 text-error transition-colors"
+                      className="w-full text-left px-4 py-2 hover:bg-error/10 text-error rounded-lg transition-colors"
                     >
                       Sign Out
                     </button>
