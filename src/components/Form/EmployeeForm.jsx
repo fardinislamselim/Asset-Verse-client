@@ -1,32 +1,46 @@
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import axios from "axios";
-import { Link } from "react-router";
 import {
-  FaUser,
-  FaImage,
-  FaEnvelope,
-  FaLock,
   FaCalendarAlt,
+  FaEnvelope,
   FaEye,
   FaEyeSlash,
+  FaImage,
+  FaLock,
+  FaUser,
 } from "react-icons/fa";
+import { Link } from "react-router";
 import useAuth from "../../hook/useAuth";
+import useAxiosSecure from "../../hook/useAxiosSecure";
 
 const EmployeeForm = () => {
   const { registerUser, updateUserProfile } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
   const [uploading, setUploading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // ✅ Password toggle state
+  const [showPassword, setShowPassword] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const focusStyle = "focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary";
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
+  const focusStyle =
+    "focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary";
+
+  const image_API_URL = `https://api.imgbb.com/1/upload?key=${
+    import.meta.env.VITE_IMGBB_API_KEY
+  }`;
+
+  // Firebase Error Handler
   const showFirebaseError = (error) => {
     let message = "Something went wrong ❌";
-    if (!error?.code) {
-      message = error?.message || message;
-    } else {
+
+    if (error?.code) {
       switch (error.code) {
         case "auth/email-already-in-use":
           message = "This email is already registered 📧";
@@ -35,57 +49,81 @@ const EmployeeForm = () => {
           message = "Invalid email address ❌";
           break;
         case "auth/weak-password":
-          message = "Password is too weak 🔒";
+          message = "Password must be at least 6 characters 🔒";
           break;
         case "auth/network-request-failed":
-          message = "Network error, please try again 🌐";
+          message = "Network error, check your internet 🌐";
           break;
         default:
           message = error.message || message;
       }
+    } else {
+      message = error.message || message;
     }
+
     toast.error(message);
   };
 
-  const onSubmit = (data) => {
-    setUploading(true);
+  // FINAL SUBMIT FUNCTION (With Backend Save)
+  const onSubmit = async (data) => {
+    try {
+      setUploading(true);
 
-    const profileImg = data.profilePicture[0];
+      const profileImg = data.profilePicture[0];
 
-    registerUser(data.email, data.password)
-      .then(() => {
-        const formData = new FormData();
-        formData.append("image", profileImg);
+      // 1. Firebase Registration
+      await registerUser(data.email, data.password);
 
-        const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`;
+      // 2. Upload Image
+      const formData = new FormData();
+      formData.append("image", profileImg);
 
-        axios.post(image_API_URL, formData)
-          .then((res) => {
-            const userProfile = {
-              displayName: data.name,
-              photoURL: res.data.data.url,
-            };
+      const imgRes = await axios.post(image_API_URL, formData);
+      const photoURL = imgRes.data.data.url;
 
-            updateUserProfile(userProfile)
-              .then(() => {
-                toast.success("Employee Registered Successfully ✅");
-                reset();
-                setUploading(false);
-              })
-              .catch((err) => {
-                showFirebaseError(err);
-                setUploading(false);
-              });
-          })
-          .catch(() => {
-            toast.error("Image upload failed ❌");
-            setUploading(false);
-          });
-      })
-      .catch((err) => {
-        showFirebaseError(err);
-        setUploading(false);
+      // 3. Update Firebase Profile
+      await updateUserProfile({
+        displayName: data.name,
+        photoURL,
       });
+
+      // 4. Prepare Employee Data for Backend
+      const employeeInfo = {
+        name: data.name,
+        email: data.email,
+        photoURL,
+        dateOfBirth: data.dateOfBirth,
+        role: "employee",
+        createdAt: new Date(),
+      };
+
+      // 5. Save Employee to Backend
+      const res = await axiosSecure.post("/users", employeeInfo);
+
+      if (res.data?.insertedId || res.data?.acknowledged) {
+        toast.success("Employee Registered Successfully ✅");
+        reset();
+      } else {
+        toast.error("Employee saved but unexpected response ⚠️");
+      }
+    } catch (error) {
+      console.error("FULL ERROR:", error);
+
+      // Firebase error
+      if (error?.code) {
+        showFirebaseError(error);
+      }
+      // Backend Axios Error
+      else if (error?.response) {
+        toast.error(error.response?.data?.message || "Backend server error ❌");
+      }
+      // Network / CORS Error
+      else {
+        toast.error("Network error or server not responding ❌");
+      }
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -95,7 +133,6 @@ const EmployeeForm = () => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
         {/* Profile Picture */}
         <div className="form-control">
           <label className="label font-medium">Profile Picture *</label>
@@ -105,10 +142,16 @@ const EmployeeForm = () => {
               type="file"
               accept="image/*"
               className={`file-input file-input-bordered w-full pl-10 ${focusStyle}`}
-              {...register("profilePicture", { required: "Profile Picture is required" })}
+              {...register("profilePicture", {
+                required: "Profile Picture is required",
+              })}
             />
           </div>
-          {errors.profilePicture && <p className="text-error text-sm mt-1">{errors.profilePicture.message}</p>}
+          {errors.profilePicture && (
+            <p className="text-error text-sm mt-1">
+              {errors.profilePicture.message}
+            </p>
+          )}
         </div>
 
         {/* Full Name */}
@@ -123,7 +166,9 @@ const EmployeeForm = () => {
               {...register("name", { required: "Full Name is required" })}
             />
           </div>
-          {errors.name && <p className="text-error text-sm">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-error text-sm">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Email */}
@@ -144,7 +189,9 @@ const EmployeeForm = () => {
               })}
             />
           </div>
-          {errors.email && <p className="text-error text-sm">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-error text-sm">{errors.email.message}</p>
+          )}
         </div>
 
         {/* Password */}
@@ -158,7 +205,10 @@ const EmployeeForm = () => {
               className={`input input-bordered w-full pl-10 ${focusStyle}`}
               {...register("password", {
                 required: "Password is required",
-                minLength: { value: 6, message: "Password must be at least 6 characters" },
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
               })}
             />
             <button
@@ -169,7 +219,9 @@ const EmployeeForm = () => {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
-          {errors.password && <p className="text-error text-sm">{errors.password.message}</p>}
+          {errors.password && (
+            <p className="text-error text-sm">{errors.password.message}</p>
+          )}
         </div>
 
         {/* Date of Birth */}
@@ -180,20 +232,31 @@ const EmployeeForm = () => {
             <input
               type="date"
               className={`input input-bordered w-full pl-10 ${focusStyle}`}
-              {...register("dateOfBirth", { required: "Date of Birth is required" })}
+              {...register("dateOfBirth", {
+                required: "Date of Birth is required",
+              })}
             />
           </div>
-          {errors.dateOfBirth && <p className="text-error text-sm">{errors.dateOfBirth.message}</p>}
+          {errors.dateOfBirth && (
+            <p className="text-error text-sm">{errors.dateOfBirth.message}</p>
+          )}
         </div>
 
         {/* Submit */}
-        <button type="submit" disabled={uploading} className="btn btn-primary w-full mt-4">
+        <button
+          type="submit"
+          disabled={uploading}
+          className="btn btn-primary w-full mt-4"
+        >
           {uploading ? "Registering..." : "Register as Employee"}
         </button>
       </form>
 
       <p className="text-sm text-center mt-4">
-        Already have an account? <Link to="/login" className="text-primary font-semibold underline">Login</Link>
+        Already have an account?{" "}
+        <Link to="/login" className="text-primary font-semibold underline">
+          Login
+        </Link>
       </p>
     </div>
   );

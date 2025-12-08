@@ -14,22 +14,33 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import useAuth from "../../hook/useAuth";
+import useAxiosSecure from "../../hook/useAxiosSecure";
 
 const HrForm = () => {
   const { registerUser, updateUserProfile } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
   const [uploading, setUploading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
   const imageHostKey = import.meta.env.VITE_IMGBB_API_KEY;
   const uploadURL = `https://api.imgbb.com/1/upload?key=${imageHostKey}`;
-  const focusStyle = "focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary";
 
+  const focusStyle =
+    "focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary";
+
+  // ✅ Proper Firebase Error Handler
   const showFirebaseError = (error) => {
     let message = "Something went wrong ❌";
-    if (!error?.code) {
-      message = error?.message || message;
-    } else {
+
+    if (error?.code) {
       switch (error.code) {
         case "auth/email-already-in-use":
           message = "This email is already registered 📧";
@@ -38,69 +49,90 @@ const HrForm = () => {
           message = "Invalid email address ❌";
           break;
         case "auth/weak-password":
-          message = "Password is too weak 🔒";
+          message = "Password must be at least 6 characters 🔒";
+          break;
+        case "auth/operation-not-allowed":
+          message = "Email/Password login is disabled ❌";
           break;
         case "auth/network-request-failed":
-          message = "Network error, please try again 🌐";
+          message = "Network error, check your internet 🌐";
           break;
         default:
           message = error.message || message;
       }
+    } else {
+      message = error.message || message;
     }
+
     toast.error(message);
   };
 
-  const onSubmit = (data) => {
-    setUploading(true);
-    const logoImg = data.companyLogo[0];
+  // FINAL SUBMIT FUNCTION
+  const onSubmit = async (data) => {
+    try {
+      setUploading(true);
 
-    registerUser(data.email, data.password)
-      .then(() => {
-        const formData = new FormData();
-        formData.append("image", logoImg);
+      const logoImg = data.companyLogo[0];
 
-        axios.post(uploadURL, formData)
-          .then((res) => {
-            const logoURL = res.data.data.url;
+      // 1. Register User in Firebase
+      await registerUser(data.email, data.password);
 
-            const userProfile = {
-              displayName: data.name,
-              photoURL: logoURL,
-            };
+      // 2. Upload Image to IMGBB
+      const formData = new FormData();
+      formData.append("image", logoImg);
 
-            updateUserProfile(userProfile)
-              .then(() => {
-                const hrData = {
-                  name: data.name,
-                  companyName: data.companyName,
-                  companyLogo: logoURL,
-                  email: data.email,
-                  dateOfBirth: data.dateOfBirth,
-                  role: "hr",
-                  packageLimit: 5,
-                  currentEmployees: 0,
-                  subscription: "basic",
-                };
+      const imgRes = await axios.post(uploadURL, formData);
+      const logoURL = imgRes.data.data.url;
 
-                console.log("✅ HR Data Ready:", hrData);
-                toast.success("HR Registered Successfully ✅");
-                reset();
-                setUploading(false);
-              })
-              .catch((err) => {
-                showFirebaseError(err);
-                setUploading(false);
-              });
-          })
-          .catch(() => {
-            toast.error("Image upload failed ❌");
-            setUploading(false);
-          });
-      })
-      .catch((err) => {
-        showFirebaseError(err);
-        setUploading(false);
+      // 3. Update Firebase Profile
+      await updateUserProfile({
+        displayName: data.name,
+        photoURL: logoURL,
       });
+
+      // 4. Prepare HR Data for Backend
+      const userInfo = {
+        name: data.name,
+        companyName: data.companyName,
+        companyLogo: logoURL,
+        email: data.email,
+        dateOfBirth: data.dateOfBirth,
+        role: "hr",
+        packageLimit: 5,
+        currentEmployees: 0,
+        subscription: "basic",
+        createdAt: new Date(),
+      };
+
+      // 5. Save to Backend
+      const res = await axiosSecure.post("/users", userInfo);
+
+      if (res.data?.insertedId || res.data?.acknowledged) {
+        toast.success("HR Registered Successfully ✅");
+        reset();
+      } else {
+        toast.error("HR saved but unexpected response ⚠️");
+      }
+    } catch (error) {
+      console.error("FULL ERROR:", error);
+
+      // Firebase Error
+      if (error?.code) {
+        showFirebaseError(error);
+      }
+      // Backend Axios Error
+      else if (error?.response) {
+        toast.error(
+          error.response?.data?.message || "Backend server error ❌"
+        );
+      }
+      // Network / CORS Error
+      else {
+        toast.error("Network error or server not responding ❌");
+      }
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -110,7 +142,6 @@ const HrForm = () => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
         {/* Full Name */}
         <div className="form-control">
           <label className="label font-medium">Full Name *</label>
@@ -123,7 +154,9 @@ const HrForm = () => {
               {...register("name", { required: "Name is required" })}
             />
           </div>
-          {errors.name && <p className="text-error text-sm">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-error text-sm">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Company Name */}
@@ -135,10 +168,16 @@ const HrForm = () => {
               type="text"
               placeholder="Company Name"
               className={`input input-bordered w-full pl-10 ${focusStyle}`}
-              {...register("companyName", { required: "Company name is required" })}
+              {...register("companyName", {
+                required: "Company name is required",
+              })}
             />
           </div>
-          {errors.companyName && <p className="text-error text-sm">{errors.companyName.message}</p>}
+          {errors.companyName && (
+            <p className="text-error text-sm">
+              {errors.companyName.message}
+            </p>
+          )}
         </div>
 
         {/* Company Logo */}
@@ -150,10 +189,16 @@ const HrForm = () => {
               type="file"
               accept="image/*"
               className={`file-input file-input-bordered w-full pl-10 ${focusStyle}`}
-              {...register("companyLogo", { required: "Company Logo is required" })}
+              {...register("companyLogo", {
+                required: "Company Logo is required",
+              })}
             />
           </div>
-          {errors.companyLogo && <p className="text-error text-sm">{errors.companyLogo.message}</p>}
+          {errors.companyLogo && (
+            <p className="text-error text-sm">
+              {errors.companyLogo.message}
+            </p>
+          )}
         </div>
 
         {/* Email */}
@@ -168,7 +213,11 @@ const HrForm = () => {
               {...register("email", { required: "Email is required" })}
             />
           </div>
-          {errors.email && <p className="text-error text-sm">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-error text-sm">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
         {/* Password */}
@@ -182,7 +231,10 @@ const HrForm = () => {
               className={`input input-bordered w-full pl-10 ${focusStyle}`}
               {...register("password", {
                 required: "Password is required",
-                minLength: { value: 6, message: "Minimum 6 characters required" },
+                minLength: {
+                  value: 6,
+                  message: "Minimum 6 characters required",
+                },
               })}
             />
             <button
@@ -193,7 +245,11 @@ const HrForm = () => {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
-          {errors.password && <p className="text-error text-sm">{errors.password.message}</p>}
+          {errors.password && (
+            <p className="text-error text-sm">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
         {/* Date of Birth */}
@@ -204,19 +260,32 @@ const HrForm = () => {
             <input
               type="date"
               className={`input input-bordered w-full pl-10 ${focusStyle}`}
-              {...register("dateOfBirth", { required: "Date of Birth is required" })}
+              {...register("dateOfBirth", {
+                required: "Date of Birth is required",
+              })}
             />
           </div>
-          {errors.dateOfBirth && <p className="text-error text-sm">{errors.dateOfBirth.message}</p>}
+          {errors.dateOfBirth && (
+            <p className="text-error text-sm">
+              {errors.dateOfBirth.message}
+            </p>
+          )}
         </div>
 
-        <button type="submit" disabled={uploading} className="btn btn-primary w-full mt-4">
+        <button
+          type="submit"
+          disabled={uploading}
+          className="btn btn-primary w-full mt-4"
+        >
           {uploading ? "Registering..." : "Register as HR"}
         </button>
       </form>
 
       <p className="text-sm text-center mt-4">
-        Already have an account? <Link to="/login" className="text-primary font-semibold underline">Login</Link>
+        Already have an account?{" "}
+        <Link to="/login" className="text-primary font-semibold underline">
+          Login
+        </Link>
       </p>
     </div>
   );
