@@ -5,6 +5,7 @@ import Register from "../pages/register/Register";
 import Login from "../pages/Login/Login";
 import PrivateRoute from "./PrivateRoute";
 import HrDashboard from "../layout/HrDashboard";
+import AddAsset from "../pages/HR/AddAsset/AddAsset";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,14 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <h2 className="text-2xl">Hr Dashboard</h2>,
+      },
+      {
+        path: "asset-list",
+        element: <h2 className="text-2xl">Hr Dashboard</h2>,
+      },
+      {
+        path: "add-asset",
+        element: <AddAsset />,
       },
     ],
   },

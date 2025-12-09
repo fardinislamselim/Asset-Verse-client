@@ -17,19 +17,12 @@ import useAuth from "../hook/useAuth";
 const HrDashboard = () => {
   const { user, logOut } = useAuth();
 
-  // Define HR Manager sidebar links based on the requirements
   const hrLinks = [
-    // 🚩 ADDED: General Dashboard link for the main landing page
     { to: "/hr/dashboard", icon: RiDashboardLine, text: "Dashboard" }, 
-    // Asset List (This might be the same content as /hr/dashboard, but kept separate for routing clarity)
     { to: "/hr/asset-list", icon: RiFileList3Line, text: "Asset List" }, 
-    // Add Asset
     { to: "/hr/add-asset", icon: RiAddBoxLine, text: "Add Asset" },
-    // All Requests
     { to: "/hr/requests", icon: RiFileList3Line, text: "All Requests" },
-    // My Employee List
     { to: "/hr/employees", icon: RiGroupLine, text: "Employee List" },
-    // Upgrade Package
     { to: "/hr/upgrade-package", icon: RiWallet3Line, text: "Upgrade Package" },
   ];
 
@@ -41,7 +34,6 @@ const HrDashboard = () => {
       {/* 1. Main Content & Navbar (Drawer Content) */}
       {/* ======================================= */}
       <div className="drawer-content min-h-screen flex flex-col">
-        {/* Navbar: bg-base-100, shadows, and sticky top */}
         <nav className="navbar w-full bg-base-100 shadow-lg sticky top-0 z-20">
           
           <div className="flex-none lg:hidden">
@@ -50,7 +42,6 @@ const HrDashboard = () => {
               aria-label="open sidebar"
               className="btn btn-square btn-ghost"
             >
-              {/* Hamburger Icon */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -68,7 +59,6 @@ const HrDashboard = () => {
           </div>
 
           <div className="flex justify-between items-center w-full px-4 lg:px-8">
-            {/* Branding - Visible on Mobile Navbar */}
             <Link
               to="/"
               className="flex items-center gap-2 text-xl font-bold text-neutral lg:hidden"
@@ -81,12 +71,10 @@ const HrDashboard = () => {
               Asset<span className="text-primary">Verse</span>
             </Link>
 
-            {/* Placeholder for Page Title (Will be updated by individual pages) */}
             <h2 className="text-xl font-semibold hidden sm:block">
               HR Manager Dashboard
             </h2>
 
-            {/* Profile & Theme Toggle */}
             <div className="flex items-center gap-4">
               <ThemeToggle />
               <div className="dropdown dropdown-end">
@@ -110,7 +98,7 @@ const HrDashboard = () => {
 
                 <ul
                   tabIndex={0}
-                  className="menu menu-sm dropdown-content z-[1] p-2 shadow-xl bg-base-200 rounded-box w-52 mt-4 text-base"
+                  className="menu menu-sm dropdown-content z-[10] p-2 shadow-xl bg-base-200 rounded-box w-52 mt-4 text-base"
                 >
                   <li className="menu-title">
                     <span>{user?.displayName || "HR Manager"}</span>
