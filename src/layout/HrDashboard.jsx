@@ -19,7 +19,7 @@ const HrDashboard = () => {
 
   const hrLinks = [
     { to: "/hr/dashboard", icon: RiDashboardLine, text: "Dashboard" }, 
-    { to: "/hr/asset-list", icon: RiFileList3Line, text: "Asset List" }, 
+    { to: "/hr/my-asset", icon: RiFileList3Line, text: "My Asset List" }, 
     { to: "/hr/add-asset", icon: RiAddBoxLine, text: "Add Asset" },
     { to: "/hr/requests", icon: RiFileList3Line, text: "All Requests" },
     { to: "/hr/employees", icon: RiGroupLine, text: "Employee List" },
