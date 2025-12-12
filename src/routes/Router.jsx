@@ -7,6 +7,7 @@ import PrivateRoute from "./PrivateRoute";
 import HrDashboard from "../layout/HrDashboard";
 import AddAsset from "../pages/HR/AddAsset/AddAsset";
 import MyAsset from "../pages/HR/MyAsset/MyAsset";
+import EditAsset from "../pages/HR/EditAsset/EditAsset";
 
 export const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: "add-asset",
         element: <AddAsset />,
+      },
+      {
+        path: "edit-asset/:id",
+        element: <EditAsset />,
       },
     ],
   },
