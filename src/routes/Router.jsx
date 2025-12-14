@@ -12,6 +12,7 @@ import EmployeeDashboard from "../layout/EmployeeDashboard";
 // import RequestAsset from "../pages/employee/RequestAsset";
 import AllRequests from "../pages/HR/AllRequests/AllRequests";
 import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
+import MyAssets from "../pages/employee/MyAssets/MyAssets";
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +64,9 @@ export const router = createBrowserRouter([
         <EmployeeDashboard></EmployeeDashboard>
       </PrivateRoute>
     ),
-    children: [{ path: "request-asset", element: <RequestAsset /> }],
+    children: [
+      { path: "request-asset", element: <RequestAsset /> },
+      { path: "my-asset", element: <MyAssets /> },
+    ],
   },
 ]);
