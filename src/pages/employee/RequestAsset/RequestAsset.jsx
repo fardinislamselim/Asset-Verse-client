@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import useAxiosSecure from "../../hook/useAxiosSecure";
-import useAuth from "../../hook/useAuth";
+import useAxiosSecure from "../../../hook/useAxiosSecure";
+import useAuth from "../../../hook/useAuth";
 
 const RequestAsset = () => {
   const axiosSecure = useAxiosSecure();

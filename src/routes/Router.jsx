@@ -9,9 +9,9 @@ import AddAsset from "../pages/HR/AddAsset/AddAsset";
 import MyAsset from "../pages/HR/MyAsset/MyAsset";
 import EditAsset from "../pages/HR/EditAsset/EditAsset";
 import EmployeeDashboard from "../layout/EmployeeDashboard";
-import { Component } from "react";
-import RequestAsset from "../pages/employee/RequestAsset";
+// import RequestAsset from "../pages/employee/RequestAsset";
 import AllRequests from "../pages/HR/AllRequests/AllRequests";
+import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 
 export const router = createBrowserRouter([
   {
