@@ -13,6 +13,7 @@ import EmployeeDashboard from "../layout/EmployeeDashboard";
 import AllRequests from "../pages/HR/AllRequests/AllRequests";
 import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 import MyAssets from "../pages/employee/MyAssets/MyAssets";
+import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
       {
         path: "requests",
         element: <AllRequests />,
+      },
+      {
+        path: "upgrade-package",
+        element: <UpgradePackage />,
       },
     ],
   },
