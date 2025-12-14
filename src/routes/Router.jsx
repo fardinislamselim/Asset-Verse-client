@@ -8,6 +8,10 @@ import HrDashboard from "../layout/HrDashboard";
 import AddAsset from "../pages/HR/AddAsset/AddAsset";
 import MyAsset from "../pages/HR/MyAsset/MyAsset";
 import EditAsset from "../pages/HR/EditAsset/EditAsset";
+import EmployeeDashboard from "../layout/EmployeeDashboard";
+import { compact } from "lodash";
+import { Component } from "react";
+import RequestAsset from "../pages/employee/RequestAsset";
 
 export const router = createBrowserRouter([
   {
@@ -47,5 +51,14 @@ export const router = createBrowserRouter([
         element: <EditAsset />,
       },
     ],
+  },
+  {
+    path: "employee",
+    element: (
+      <PrivateRoute>
+        <EmployeeDashboard></EmployeeDashboard>
+      </PrivateRoute>
+    ),
+    children: [{ path: "request-asset", element: <RequestAsset /> }],
   },
 ]);

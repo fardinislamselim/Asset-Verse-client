@@ -16,7 +16,6 @@ import useAuth from "../../../hook/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 import toast from "react-hot-toast";
-
 const AddAsset = () => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
@@ -42,32 +41,30 @@ const AddAsset = () => {
       const imageFile = formData.productImage[0];
       const imgData = new FormData();
       imgData.append("image", imageFile);
-
       const imgRes = await fetch(
-        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
+        `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_IMGBB_API_KEY
+        }`,
         {
           method: "POST",
           body: imgData,
         }
       );
-
       const imgResult = await imgRes.json();
-      const imageUrl = imgResult.data.display_url;
+      const imageUrl = imgResult?.data?.display_url;
 
       const assetData = {
         ...formData,
         productImage: imageUrl,
-        hrEmail: hr.email,
-        companyName: hr.companyName,
-        dateAdded: new Date().toISOString(),
-        availableQuantity: formData.productQuantity,
       };
 
-      const result = await axiosSecure.post("/assets", assetData);
-
-      if (result.data.insertedId) {
-        toast.success("Asset registered successfully");
+      const result =await axiosSecure.post("/assets", assetData);
+      console.log(result)
+      if (result?.data?.insertedId) {
+        toast.success("✅ Asset Registered Successfully!");
         reset();
+      } else {
+        toast.error("Failed to add asset: No insertedId returned.");
       }
     } catch (error) {
       toast.error("Failed to add asset",error);
@@ -89,9 +86,7 @@ const AddAsset = () => {
         <FaInfoCircle />
         <div>
           <h3 className="font-bold">Missing HR Data</h3>
-          <p className="text-sm">
-            User profile data could not be loaded.
-          </p>
+          <p className="text-sm">User profile data could not be loaded.</p>
         </div>
       </div>
     );
@@ -101,7 +96,8 @@ const AddAsset = () => {
     <div className="p-6 md:p-10 bg-base-100 min-h-full rounded-lg shadow-xl">
       <header className="mb-8 border-b pb-4 border-base-200 text-center">
         <h1 className="text-3xl font-bold text-primary flex justify-center items-center">
-          <FaPlusSquare className="mr-3 text-2xl hidden sm:block" /> Add New Company Asset
+          <FaPlusSquare className="mr-3 text-2xl hidden sm:block" /> Add New
+          Company Asset
         </h1>
         <p className="text-base-content/70 mt-1">
           Register a new product in the company inventory.
