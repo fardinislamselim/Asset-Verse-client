@@ -9,9 +9,9 @@ import AddAsset from "../pages/HR/AddAsset/AddAsset";
 import MyAsset from "../pages/HR/MyAsset/MyAsset";
 import EditAsset from "../pages/HR/EditAsset/EditAsset";
 import EmployeeDashboard from "../layout/EmployeeDashboard";
-import { compact } from "lodash";
 import { Component } from "react";
 import RequestAsset from "../pages/employee/RequestAsset";
+import AllRequests from "../pages/HR/AllRequests/AllRequests";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: "edit-asset/:id",
         element: <EditAsset />,
+      },
+      {
+        path: "requests",
+        element: <AllRequests />,
       },
     ],
   },

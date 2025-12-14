@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import useAxiosSecure from "../../hook/useAxiosSecure";
+import useAuth from "../../hook/useAuth";
 
 const RequestAsset = () => {
   const axiosSecure = useAxiosSecure();
@@ -96,6 +97,7 @@ const RequestAsset = () => {
 
 // Modal Component
 const RequestModal = ({ asset, onClose }) => {
+  const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
@@ -114,6 +116,8 @@ const RequestModal = ({ asset, onClose }) => {
         assetType: asset.productType,
         companyName: asset.companyName,
         hrEmail: asset.hrEmail,
+        requesterName: user.displayName,
+        requesterEmail: user.email,
         note,
       });
       toast.success("Request sent successfully!");
