@@ -9,12 +9,13 @@ import AddAsset from "../pages/HR/AddAsset/AddAsset";
 import MyAsset from "../pages/HR/MyAsset/MyAsset";
 import EditAsset from "../pages/HR/EditAsset/EditAsset";
 import EmployeeDashboard from "../layout/EmployeeDashboard";
-// import RequestAsset from "../pages/employee/RequestAsset";
 import AllRequests from "../pages/HR/AllRequests/AllRequests";
 import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 import MyAssets from "../pages/employee/MyAssets/MyAssets";
 import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
 import MyEmployeeList from "../pages/HR/MyEmployeeList/MyEmployeeList";
+import Profile from "../pages/shared/Profile";
+import HRProfile from "../pages/HR/Profile/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ export const router = createBrowserRouter([
         path: "employees",
         element: <MyEmployeeList />,
       },
+      {
+        path: "profile",
+        element: <HRProfile />,
+      },
     ],
   },
   {
@@ -77,6 +82,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "request-asset", element: <RequestAsset /> },
       { path: "my-asset", element: <MyAssets /> },
+      { path: "profile", element: <Profile /> },
     ],
   },
 ]);

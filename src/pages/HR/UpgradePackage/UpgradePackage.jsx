@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router";
@@ -8,6 +8,7 @@ const UpgradePackage = () => {
   const axiosSecure = useAxiosSecure();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const [redirectUrl, setRedirectUrl] = useState(null);
 
   // Packages & Current User Queries
   const {
@@ -34,6 +35,25 @@ const UpgradePackage = () => {
     },
   });
 
+  // Handle redirect URL
+  useEffect(() => {
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  }, [redirectUrl]);
+
+  const confirmUpgrade = async (sessionId) => {
+    try {
+      await axiosSecure.post("/confirm-payment", { session_id: sessionId });
+      toast.success("Payment successful! Your package has been upgraded.");
+      refetchUser(); // Refresh user data to show new limit
+      refetchPackages(); // Optional: refresh packages if needed
+    } catch (err) {
+      toast.error("Upgrade failed. Please contact support.");
+      console.error(err);
+    }
+  };
+
   // Handle return from Stripe
   useEffect(() => {
     const success = searchParams.get("success");
@@ -50,19 +70,7 @@ const UpgradePackage = () => {
 
     // Clean URL after handling
     window.history.replaceState({}, "", "/hr/upgrade-package");
-  }, [location, searchParams]);
-
-  const confirmUpgrade = async (sessionId) => {
-    try {
-      await axiosSecure.post("/confirm-payment", { session_id: sessionId });
-      toast.success("Payment successful! Your package has been upgraded.");
-      refetchUser(); // Refresh user data to show new limit
-      refetchPackages(); // Optional: refresh packages if needed
-    } catch (err) {
-      toast.error("Upgrade failed. Please contact support.");
-      console.error(err);
-    }
-  };
+  }, [location, searchParams, confirmUpgrade]);
 
   const handleUpgrade = async (pkg) => {
     try {
@@ -71,7 +79,7 @@ const UpgradePackage = () => {
       });
 
       if (res.data.url) {
-        window.location.href = res.data.url;
+        setRedirectUrl(res.data.url);
       }
     } catch (err) {
       toast.error("Failed to initiate upgrade. Please try again.");
