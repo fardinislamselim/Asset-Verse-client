@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import EmployeeDashboard from "../layout/EmployeeDashboard";
 import HrDashboard from "../layout/HrDashboard";
 import RootLayout from "../layout/RootLayout";
+import EmployeeHome from "../pages/employee/EmployeeHome/EmployeeHome";
 import MyAssets from "../pages/employee/MyAssets/MyAssets";
 import MyTeam from "../pages/employee/MyTeam/MyTeam";
 import EmployeeProfile from "../pages/employee/Profile/Profile";
@@ -88,6 +89,7 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
+      { path: "dashboard", element: <EmployeeHome /> },
       { path: "request-asset", element: <RequestAsset /> },
       { path: "my-asset", element: <MyAssets /> },
       { path: "profile", element: <EmployeeProfile /> },
