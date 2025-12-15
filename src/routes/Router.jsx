@@ -16,6 +16,7 @@ import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
 import MyEmployeeList from "../pages/HR/MyEmployeeList/MyEmployeeList";
 import Profile from "../pages/shared/Profile";
 import HRProfile from "../pages/HR/Profile/Profile";
+import EmployeeProfile from "../pages/employee/Profile/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -82,7 +83,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "request-asset", element: <RequestAsset /> },
       { path: "my-asset", element: <MyAssets /> },
-      { path: "profile", element: <Profile /> },
+      { path: "profile", element: <EmployeeProfile /> },
     ],
   },
 ]);
