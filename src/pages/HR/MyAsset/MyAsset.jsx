@@ -20,7 +20,7 @@ const AssetList = () => {
     () =>
       debounce((value) => {
         setSearchInput(value);
-        setCurrentPage(1); // Reset to first page on new search
+        setCurrentPage(1);
       }, 500),
     []
   );
