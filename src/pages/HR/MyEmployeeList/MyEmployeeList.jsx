@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import useAxiosSecure from "../../../hook/useAxiosSecure";
-import useAuth from "../../../hook/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
+import useAuth from "../../../hook/useAuth";
+import useAxiosSecure from "../../../hook/useAxiosSecure";
 
 const MyEmployeeList = () => {
   const axiosSecure = useAxiosSecure();
@@ -42,6 +42,37 @@ const MyEmployeeList = () => {
       return res.data;
     },
   });
+
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [selectedAssetId, setSelectedAssetId] = useState("");
+
+  // Fetch assets for assignment
+  const { data: availableAssets = [], refetch: refetchAssets } = useQuery({
+    queryKey: ["hr-assets-list"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/assets?limit=200");
+      return res.data.assets.filter((a) => a.availableQuantity > 0);
+    },
+  });
+
+  const handleAssign = async () => {
+    if (!selectedAssetId) return toast.error("Please select an asset");
+
+    try {
+      await axiosSecure.post("/assets/direct-assign", {
+        assetId: selectedAssetId,
+        employeeEmail: selectedEmployee.employeeEmail,
+        employeeName: selectedEmployee.employeeName,
+      });
+      toast.success("Asset assigned successfully");
+      setSelectedEmployee(null);
+      setSelectedAssetId("");
+      refetch(); 
+      refetchAssets(); 
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to assign asset");
+    }
+  };
 
   const handleRemove = async (email) => {
     if (
@@ -135,7 +166,13 @@ const MyEmployeeList = () => {
                     <td className="text-center font-semibold">
                       {emp.assignedAssetsCount}
                     </td>
-                    <td>
+                    <td className="flex gap-2">
+                      <button
+                        onClick={() => setSelectedEmployee(emp)}
+                        className="btn btn-success btn-sm text-white"
+                      >
+                        Assign Asset
+                      </button>
                       <button
                         onClick={() => handleRemove(emp.employeeEmail)}
                         className="btn btn-error btn-sm"
@@ -185,12 +222,20 @@ const MyEmployeeList = () => {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => handleRemove(emp.employeeEmail)}
-                  className="btn btn-error btn-outline mt-4 w-full"
-                >
-                  Remove from Team
-                </button>
+                <div className="flex flex-col gap-2 mt-4">
+                  <button
+                    onClick={() => setSelectedEmployee(emp)}
+                    className="btn btn-success btn-outline w-full"
+                  >
+                    Assign Asset
+                  </button>
+                  <button
+                    onClick={() => handleRemove(emp.employeeEmail)}
+                    className="btn btn-error btn-outline w-full"
+                  >
+                    Remove from Team
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -248,6 +293,62 @@ const MyEmployeeList = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Assign Asset Modal */}
+      {selectedEmployee && (
+        <dialog className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg mb-4">
+              Assign Asset to {selectedEmployee.employeeName}
+            </h3>
+
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Select Asset</span>
+              </label>
+              <select
+                className="select select-bordered w-full"
+                value={selectedAssetId}
+                onChange={(e) => setSelectedAssetId(e.target.value)}
+              >
+                <option value="">-- Choose an Asset --</option>
+                {availableAssets.map((asset) => (
+                  <option key={asset._id} value={asset._id}>
+                    {asset.productName} ({asset.productType}) -{" "}
+                    {asset.availableQuantity} available
+                  </option>
+                ))}
+              </select>
+              {availableAssets.length === 0 && (
+                <label className="label">
+                  <span className="label-text-alt text-error">
+                    No available assets found.
+                  </span>
+                </label>
+              )}
+            </div>
+
+            <div className="modal-action">
+              <button
+                className="btn btn-ghost"
+                onClick={() => {
+                  setSelectedEmployee(null);
+                  setSelectedAssetId("");
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleAssign}
+                disabled={!selectedAssetId}
+              >
+                Assign
+              </button>
+            </div>
+          </div>
+        </dialog>
       )}
     </div>
   );
