@@ -14,11 +14,11 @@ import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 import MyAssets from "../pages/employee/MyAssets/MyAssets";
 import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
 import MyEmployeeList from "../pages/HR/MyEmployeeList/MyEmployeeList";
-import Profile from "../pages/shared/Profile";
 import HRProfile from "../pages/HR/Profile/Profile";
 import EmployeeProfile from "../pages/employee/Profile/Profile";
 import PaymentHistory from "../pages/HR/PaymentHistory/PaymentHistory";
 import MyTeam from "../pages/employee/MyTeam/MyTeam";
+import RequestHistory from "../pages/employee/RequestHistory/RequestHistory";
 
 export const router = createBrowserRouter([
   {
@@ -91,6 +91,7 @@ export const router = createBrowserRouter([
       { path: "my-asset", element: <MyAssets /> },
       { path: "profile", element: <EmployeeProfile /> },
       { path: "my-team", element: <MyTeam /> },
+      { path: "requests-history", element: <RequestHistory /> },
     ],
   },
 ]);
