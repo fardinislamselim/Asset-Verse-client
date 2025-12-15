@@ -35,7 +35,12 @@ const HrHome = () => {
     },
   });
 
-  const { pieData = [], barData = [], summary = {} } = analytics;
+  const {
+    pieData = [],
+    barData = [],
+    summary = {},
+    recentRequests = [],
+  } = analytics;
 
   if (isPending) {
     return (
@@ -49,18 +54,19 @@ const HrHome = () => {
     <div className="p-6 max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+        <h1 className="text-3xl font-bold">HR Dashboard</h1>
         <p className="text-gray-500 mt-2">
-          Welcome back, {user?.displayName || "HR Manager"}! Here is what's happening today.
+          Welcome back, {user?.displayName || "HR Manager"}! Here is your team's
+          overview.
         </p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Assets */}
-        <div className="stat bg-base-100 shadow-xl rounded-2xl border border-base-200">
+        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-primary">
           <div className="stat-figure text-primary">
-            <FaBoxOpen className="text-4xl opacity-80" />
+            <FaBoxOpen className="text-3xl opacity-80" />
           </div>
           <div className="stat-title font-medium">Total Assets</div>
           <div className="stat-value text-primary">{summary.totalAssets || 0}</div>
@@ -68,9 +74,9 @@ const HrHome = () => {
         </div>
 
         {/* Total Employees */}
-        <div className="stat bg-base-100 shadow-xl rounded-2xl border border-base-200">
+        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-secondary">
           <div className="stat-figure text-secondary">
-            <FaUsers className="text-4xl opacity-80" />
+            <FaUsers className="text-3xl opacity-80" />
           </div>
           <div className="stat-title font-medium">Total Employees</div>
           <div className="stat-value text-secondary">
@@ -80,9 +86,9 @@ const HrHome = () => {
         </div>
 
         {/* Assigned Assets */}
-        <div className="stat bg-base-100 shadow-xl rounded-2xl border border-base-200">
+        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-accent">
           <div className="stat-figure text-accent">
-            <FaCheckCircle className="text-4xl opacity-80" />
+            <FaCheckCircle className="text-3xl opacity-80" />
           </div>
           <div className="stat-title font-medium">Assigned Assets</div>
           <div className="stat-value text-accent">
@@ -92,9 +98,9 @@ const HrHome = () => {
         </div>
 
         {/* Pending Requests */}
-        <div className="stat bg-base-100 shadow-xl rounded-2xl border border-base-200">
+        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-warning">
           <div className="stat-figure text-warning">
-            <FaClock className="text-4xl opacity-80" />
+            <FaClock className="text-3xl opacity-80" />
           </div>
           <div className="stat-title font-medium">Pending Requests</div>
           <div className="stat-value text-warning">
@@ -118,12 +124,9 @@ const HrHome = () => {
                       data={pieData}
                       cx="50%"
                       cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name} ${(percent * 100).toFixed(0)}%`
-                      }
+                      innerRadius={60}
                       outerRadius={100}
-                      fill="#8884d8"
+                      paddingAngle={5}
                       dataKey="value"
                     >
                       {pieData.map((entry, index) => (
@@ -139,7 +142,7 @@ const HrHome = () => {
                 </ResponsiveContainer>
               ) : (
                 <div className="flex h-full items-center justify-center text-gray-400">
-                  No data available
+                  No assets to show distribution
                 </div>
               )}
             </div>
@@ -173,10 +176,70 @@ const HrHome = () => {
                 </ResponsiveContainer>
               ) : (
                 <div className="flex h-full items-center justify-center text-gray-400">
-                  No data available
+                  No requests to show
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity Section */}
+      <div className="card bg-base-100 shadow-xl border border-base-200">
+        <div className="card-body">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="card-title text-xl">Recent Requests</h2>
+            <button className="btn btn-sm btn-ghost">View All</button>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="table table-zebra w-full">
+              <thead>
+                <tr>
+                  <th>Requestor</th>
+                  <th>Asset</th>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentRequests.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="text-center py-8 text-gray-500">
+                      No recent requests found.
+                    </td>
+                  </tr>
+                ) : (
+                  recentRequests.map((req) => (
+                    <tr key={req._id}>
+                      <td>
+                        <div>
+                          <div className="font-bold">{req.requesterName}</div>
+                          <div className="text-xs opacity-50">{req.requesterEmail}</div>
+                        </div>
+                      </td>
+                      <td>{req.assetName}</td>
+                      <td>{req.assetType}</td>
+                      <td>{new Date(req.requestDate).toLocaleDateString()}</td>
+                      <td>
+                        <span
+                          className={`badge ${
+                            req.requestStatus === "pending"
+                              ? "badge-warning"
+                              : req.requestStatus === "approved"
+                              ? "badge-success text-white"
+                              : "badge-error text-white"
+                          }`}
+                        >
+                          {req.requestStatus}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
