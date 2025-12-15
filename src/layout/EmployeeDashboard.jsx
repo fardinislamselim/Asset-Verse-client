@@ -6,6 +6,7 @@ import {
   RiLogoutBoxLine,
   RiSendPlaneLine,
   RiUser3Line,
+  RiTeamLine,
 } from "react-icons/ri";
 import { Link, NavLink, Outlet } from "react-router";
 
@@ -29,10 +30,15 @@ const EmployeeDashboard = () => {
       icon: RiHistoryLine,
       text: "Requests History",
     },
+    // {
+    //   to: "/employee/monthly-requests",
+    //   icon: RiFileList3Line,
+    //   text: "Monthly Requests",
+    // },
     {
-      to: "/employee/monthly-requests",
-      icon: RiFileList3Line,
-      text: "Monthly Requests",
+      to: "/employee/my-team",
+      icon: RiTeamLine,
+      text: "My Team",
     },
   ];
 

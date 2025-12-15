@@ -17,6 +17,8 @@ import MyEmployeeList from "../pages/HR/MyEmployeeList/MyEmployeeList";
 import Profile from "../pages/shared/Profile";
 import HRProfile from "../pages/HR/Profile/Profile";
 import EmployeeProfile from "../pages/employee/Profile/Profile";
+import PaymentHistory from "../pages/HR/PaymentHistory/PaymentHistory";
+import MyTeam from "../pages/employee/MyTeam/MyTeam";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +73,10 @@ export const router = createBrowserRouter([
         path: "profile",
         element: <HRProfile />,
       },
+      {
+        path: "payment-history",
+        element: <PaymentHistory />,
+      },
     ],
   },
   {
@@ -84,6 +90,7 @@ export const router = createBrowserRouter([
       { path: "request-asset", element: <RequestAsset /> },
       { path: "my-asset", element: <MyAssets /> },
       { path: "profile", element: <EmployeeProfile /> },
+      { path: "my-team", element: <MyTeam /> },
     ],
   },
 ]);

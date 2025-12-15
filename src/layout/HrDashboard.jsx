@@ -8,6 +8,7 @@ import {
   RiWallet3Line,
   RiUser3Line,
   RiLogoutBoxLine,
+  RiSecurePaymentLine,
 } from "react-icons/ri";
 
 import logo from "../assets/logo.png";
@@ -18,12 +19,17 @@ const HrDashboard = () => {
   const { user, logOut } = useAuth();
 
   const hrLinks = [
-    { to: "/hr/dashboard", icon: RiDashboardLine, text: "Dashboard" }, 
-    { to: "/hr/my-asset", icon: RiFileList3Line, text: "My Asset List" }, 
+    { to: "/hr/dashboard", icon: RiDashboardLine, text: "Dashboard" },
+    { to: "/hr/my-asset", icon: RiFileList3Line, text: "My Asset List" },
     { to: "/hr/add-asset", icon: RiAddBoxLine, text: "Add Asset" },
     { to: "/hr/requests", icon: RiFileList3Line, text: "All Requests" },
     { to: "/hr/employees", icon: RiGroupLine, text: "Employee List" },
     { to: "/hr/upgrade-package", icon: RiWallet3Line, text: "Upgrade Package" },
+    {
+      to: "/hr/payment-history",
+      icon: RiSecurePaymentLine,
+      text: "Payment History",
+    },
   ];
 
   return (
@@ -35,7 +41,6 @@ const HrDashboard = () => {
       {/* ======================================= */}
       <div className="drawer-content min-h-screen flex flex-col">
         <nav className="navbar w-full bg-base-100 shadow-lg sticky top-0 z-20">
-          
           <div className="flex-none lg:hidden">
             <label
               htmlFor="my-drawer-4"
