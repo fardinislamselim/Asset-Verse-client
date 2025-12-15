@@ -1,24 +1,25 @@
 import { createBrowserRouter } from "react-router";
-import RootLayout from "../layout/RootLayout";
-import Home from "../pages/Home/Home";
-import Register from "../pages/register/Register";
-import Login from "../pages/Login/Login";
-import PrivateRoute from "./PrivateRoute";
-import HrDashboard from "../layout/HrDashboard";
-import AddAsset from "../pages/HR/AddAsset/AddAsset";
-import MyAsset from "../pages/HR/MyAsset/MyAsset";
-import EditAsset from "../pages/HR/EditAsset/EditAsset";
 import EmployeeDashboard from "../layout/EmployeeDashboard";
-import AllRequests from "../pages/HR/AllRequests/AllRequests";
-import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
+import HrDashboard from "../layout/HrDashboard";
+import RootLayout from "../layout/RootLayout";
 import MyAssets from "../pages/employee/MyAssets/MyAssets";
-import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
-import MyEmployeeList from "../pages/HR/MyEmployeeList/MyEmployeeList";
-import HRProfile from "../pages/HR/Profile/Profile";
-import EmployeeProfile from "../pages/employee/Profile/Profile";
-import PaymentHistory from "../pages/HR/PaymentHistory/PaymentHistory";
 import MyTeam from "../pages/employee/MyTeam/MyTeam";
+import EmployeeProfile from "../pages/employee/Profile/Profile";
+import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 import RequestHistory from "../pages/employee/RequestHistory/RequestHistory";
+import Home from "../pages/Home/Home";
+import AddAsset from "../pages/HR/AddAsset/AddAsset";
+import AllRequests from "../pages/HR/AllRequests/AllRequests";
+import EditAsset from "../pages/HR/EditAsset/EditAsset";
+import HrHome from "../pages/HR/HrHome/HrHome";
+import MyAsset from "../pages/HR/MyAsset/MyAsset";
+import MyEmployeeList from "../pages/HR/MyEmployeeList/MyEmployeeList";
+import PaymentHistory from "../pages/HR/PaymentHistory/PaymentHistory";
+import HRProfile from "../pages/HR/Profile/Profile";
+import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
+import Login from "../pages/Login/Login";
+import Register from "../pages/register/Register";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -43,7 +44,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "dashboard",
-        element: <h2 className="text-2xl">Hr Dashboard</h2>,
+        element: <HrHome />,
       },
       {
         path: "my-asset",
