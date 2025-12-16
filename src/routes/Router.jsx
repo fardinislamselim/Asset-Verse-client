@@ -23,13 +23,16 @@ import HRProfile from "../pages/HR/Profile/Profile";
 import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
 import Login from "../pages/Login/Login";
 import Register from "../pages/register/Register";
-import RoleRoute from "./RoleRoute";
 import PrivateRoute from "./PrivateRoute";
+import RoleRoute from "./RoleRoute";
+
+import ErrorPage from "../pages/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
