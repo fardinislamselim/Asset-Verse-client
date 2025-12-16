@@ -18,6 +18,8 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import HighImpactCard from "../../../components/Dashboard/HighImpactCard";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 import useAuth from "../../../hook/useAuth";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 
@@ -43,11 +45,7 @@ const HrHome = () => {
   } = analytics;
 
   if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
@@ -63,51 +61,38 @@ const HrHome = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Assets */}
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-primary">
-          <div className="stat-figure text-primary">
-            <FaBoxOpen className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">Total Assets</div>
-          <div className="stat-value text-primary">{summary.totalAssets || 0}</div>
-          <div className="stat-desc">In your inventory</div>
-        </div>
-
-        {/* Total Employees */}
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-secondary">
-          <div className="stat-figure text-secondary">
-            <FaUsers className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">Total Employees</div>
-          <div className="stat-value text-secondary">
-            {summary.totalEmployees || 0}
-          </div>
-          <div className="stat-desc">Active team members</div>
-        </div>
-
-        {/* Assigned Assets */}
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-accent">
-          <div className="stat-figure text-accent">
-            <FaCheckCircle className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">Assigned Assets</div>
-          <div className="stat-value text-accent">
-            {summary.assignedAssets || 0}
-          </div>
-          <div className="stat-desc">Currently in use</div>
-        </div>
-
-        {/* Pending Requests */}
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-warning">
-          <div className="stat-figure text-warning">
-            <FaClock className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">Pending Requests</div>
-          <div className="stat-value text-warning">
-            {summary.pendingRequests || 0}
-          </div>
-          <div className="stat-desc">Awaiting approval</div>
-        </div>
+        <HighImpactCard
+          title="Total Assets"
+          value={summary.totalAssets || 0}
+          subtitle="In your inventory"
+          icon={FaBoxOpen}
+          variant="primary"
+          delay={0.1}
+        />
+        <HighImpactCard
+          title="Total Employees"
+          value={summary.totalEmployees || 0}
+          subtitle="Active team members"
+          icon={FaUsers}
+          variant="secondary"
+          delay={0.2}
+        />
+        <HighImpactCard
+          title="Assigned Assets"
+          value={summary.assignedAssets || 0}
+          subtitle="Currently in use"
+          icon={FaCheckCircle}
+          variant="accent"
+          delay={0.3}
+        />
+        <HighImpactCard
+          title="Pending Requests"
+          value={summary.pendingRequests || 0}
+          subtitle="Awaiting approval"
+          icon={FaClock}
+          variant="warning"
+          delay={0.4}
+        />
       </div>
 
       {/* Charts Section */}

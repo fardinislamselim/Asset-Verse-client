@@ -1,6 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 
 const RequestAsset = () => {
@@ -60,9 +61,7 @@ const RequestAsset = () => {
       </div>
 
       {isPending ? (
-        <div className="flex justify-center items-center h-40">
-          <span className="loading loading-spinner loading-lg text-primary"></span>
-        </div>
+        <LoadingSpinner fullScreen={false} />
       ) : assets.length === 0 ? (
         <div className="text-center py-20 flex flex-col items-center">
           <div className="text-6xl mb-4">📦</div>

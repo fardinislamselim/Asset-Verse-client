@@ -18,6 +18,8 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import HighImpactCard from "../../../components/Dashboard/HighImpactCard";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 import useAuth from "../../../hook/useAuth";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 
@@ -43,11 +45,7 @@ const EmployeeHome = () => {
   } = analytics;
 
   if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
@@ -61,49 +59,42 @@ const EmployeeHome = () => {
         </p>
       </div>
 
+
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-primary">
-          <div className="stat-figure text-primary">
-            <FaBoxOpen className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">My Assets</div>
-          <div className="stat-value text-primary">
-            {summary.totalAssigned || 0}
-          </div>
-          <div className="stat-desc">Total assigned items</div>
-        </div>
-
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-secondary">
-          <div className="stat-figure text-secondary">
-            <FaCheckCircle className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">Returnable</div>
-          <div className="stat-value text-secondary">
-            {summary.returnable || 0}
-          </div>
-          <div className="stat-desc">Items to be returned</div>
-        </div>
-
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-accent">
-          <div className="stat-figure text-accent">
-            <FaFileAlt className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">Non-returnable</div>
-          <div className="stat-value text-accent">
-            {summary.nonReturnable || 0}
-          </div>
-          <div className="stat-desc">Consumables / Permanent</div>
-        </div>
-
-        <div className="stat bg-base-100 shadow-lg rounded-2xl border-l-4 border-warning">
-          <div className="stat-figure text-warning">
-            <FaExclamationCircle className="text-3xl opacity-80" />
-          </div>
-          <div className="stat-title font-medium">Pending Requests</div>
-          <div className="stat-value text-warning">{summary.pending || 0}</div>
-          <div className="stat-desc">Awaiting approval</div>
-        </div>
+        <HighImpactCard
+          title="My Assets"
+          value={summary.totalAssigned || 0}
+          subtitle="Total assigned items"
+          icon={FaBoxOpen}
+          variant="primary"
+          delay={0.1}
+        />
+        <HighImpactCard
+          title="Returnable"
+          value={summary.returnable || 0}
+          subtitle="Items to be returned"
+          icon={FaCheckCircle}
+          variant="secondary"
+          delay={0.2}
+        />
+        <HighImpactCard
+          title="Non-returnable"
+          value={summary.nonReturnable || 0}
+          subtitle="Consumables / Permanent"
+          icon={FaFileAlt}
+          variant="accent"
+          delay={0.3}
+        />
+        <HighImpactCard
+          title="Pending Requests"
+          value={summary.pending || 0}
+          subtitle="Awaiting approval"
+          icon={FaExclamationCircle}
+          variant="warning"
+          delay={0.4}
+        />
       </div>
 
       {/* Charts Section */}

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 
 const MyTeam = () => {
@@ -30,12 +31,10 @@ const MyTeam = () => {
     return birthMonth === currentMonth;
   });
 
+
+
   if (isPending) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import useAxiosPublic from "../../hook/useAxiosPublic";
 
+import LoadingSpinner from "../../components/LoadingSpinner";
+
 const AvailableAssets = () => {
   const axiosPublic = useAxiosPublic();
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,9 +64,7 @@ const AvailableAssets = () => {
       </div>
 
       {isPending ? (
-        <div className="flex justify-center items-center h-40">
-          <span className="loading loading-spinner loading-lg text-primary"></span>
-        </div>
+        <LoadingSpinner fullScreen={false} />
       ) : assets.length === 0 ? (
         <div className="text-center py-20 flex flex-col items-center">
           <div className="text-6xl mb-4">📦</div>

@@ -1,6 +1,7 @@
 import React from "react";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 const RequestHistory = () => {
   const axiosSecure = useAxiosSecure();
@@ -28,9 +29,7 @@ const RequestHistory = () => {
 
   if (isPending) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
+      <LoadingSpinner />
     );
   }
 

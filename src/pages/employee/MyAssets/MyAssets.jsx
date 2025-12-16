@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import LoadingSpinner from "../../../components/LoadingSpinner";
 
 const MyAssets = () => {
   const axiosSecure = useAxiosSecure();
@@ -43,9 +44,7 @@ const MyAssets = () => {
 
   if (isPending) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
+      <LoadingSpinner />
     );
   }
 
