@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import EmployeeDashboard from "../layout/EmployeeDashboard";
 import HrDashboard from "../layout/HrDashboard";
 import RootLayout from "../layout/RootLayout";
+import AssetDetails from "../pages/employee/AssetDetails/AssetDetails";
 import EmployeeHome from "../pages/employee/EmployeeHome/EmployeeHome";
 import MyAssets from "../pages/employee/MyAssets/MyAssets";
 import MyTeam from "../pages/employee/MyTeam/MyTeam";
@@ -91,6 +92,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <EmployeeHome /> },
       { path: "request-asset", element: <RequestAsset /> },
+      { path: "asset-details/:id", element: <AssetDetails /> },
       { path: "my-asset", element: <MyAssets /> },
       { path: "profile", element: <EmployeeProfile /> },
       { path: "my-team", element: <MyTeam /> },

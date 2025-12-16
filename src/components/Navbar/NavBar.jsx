@@ -10,7 +10,7 @@ import {
   RiLogoutBoxLine,
   RiTeamLine,
   RiUser3Line,
-  RiVipCrownLine
+  RiVipCrownLine,
 } from "react-icons/ri"; // Import icons
 import { Link, NavLink, useNavigate } from "react-router";
 import logo from "../../assets/logo.png";
@@ -30,14 +30,14 @@ const Navbar = () => {
   // Fetch user role from MongoDB
   const { data: dbUser = {}, isLoading: isRoleLoading } = useQuery({
     queryKey: ["user-role", user?.email],
-    enabled: !!user?.email && !loading, // Only run if user is logged in
+    enabled: !!user?.email && !loading,
     queryFn: async () => {
       const res = await axiosSecure.get("/user");
       return res.data;
     },
   });
 
-  const role = dbUser?.role; // 'employee' or 'hr'
+  const role = dbUser?.role;
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -91,21 +91,7 @@ const Navbar = () => {
           }
           onClick={() => setMobileMenuOpen(false)}
         >
-          Join as Employee
-        </NavLink>
-      </li>
-      <li>
-        <NavLink
-          to="/register"
-          state={{ role: "hr" }} // Optional: Pass state if register page supports it
-          className={({ isActive }) =>
-            `px-3 py-2 rounded-lg font-medium transition-colors ${
-              isActive ? "text-primary bg-primary/10" : "hover:text-primary"
-            }`
-          }
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Join as HR Manager
+          Join Free
         </NavLink>
       </li>
     </>
@@ -115,7 +101,11 @@ const Navbar = () => {
   const employeeMenu = [
     { to: "/employee/dashboard", text: "Dashboard", icon: RiDashboardLine },
     { to: "/employee/my-asset", text: "My Assets", icon: RiFileList3Line },
-    { to: "/employee/request-asset", text: "Request Asset", icon: RiAddCircleLine },
+    {
+      to: "/employee/request-asset",
+      text: "Request Asset",
+      icon: RiAddCircleLine,
+    },
     { to: "/employee/my-team", text: "My Team", icon: RiTeamLine },
     { to: "/employee/profile", text: "Profile", icon: RiUser3Line },
   ];
@@ -127,16 +117,20 @@ const Navbar = () => {
     { to: "/hr/add-asset", text: "Add Asset", icon: RiAddCircleLine },
     { to: "/hr/requests", text: "All Requests", icon: RiHistoryLine },
     { to: "/hr/employees", text: "Employee List", icon: RiTeamLine },
-    { to: "/hr/upgrade-package", text: "Upgrade Package", icon: RiVipCrownLine },
+    {
+      to: "/hr/upgrade-package",
+      text: "Upgrade Package",
+      icon: RiVipCrownLine,
+    },
     { to: "/hr/profile", text: "Profile", icon: RiUser3Line },
   ];
 
-  const menuItems = role === "hr" ? hrMenu : role === "employee" ? employeeMenu : [];
+  const menuItems =
+    role === "hr" ? hrMenu : role === "employee" ? employeeMenu : [];
 
   return (
     <div className="backdrop-blur-xl bg-base-100/90 shadow-sm sticky top-0 z-50 border-b border-base-200">
       <Container className="navbar py-3 px-4 lg:px-8">
-        
         {/* ================= LEFT: LOGO ================= */}
         <div className="navbar-start w-auto">
           <Link to="/" className="flex items-center gap-2 group">
@@ -169,7 +163,10 @@ const Navbar = () => {
             <span className="loading loading-spinner text-primary"></span>
           ) : !user ? (
             /* Not Logged In */
-            <Link to="/login" className="btn btn-primary px-6 rounded-lg font-bold shadow-lg shadow-primary/30 hover:scale-105 transition-transform">
+            <Link
+              to="/login"
+              className="btn btn-primary px-6 rounded-lg font-bold shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
+            >
               Login
             </Link>
           ) : (
@@ -196,7 +193,9 @@ const Navbar = () => {
                     <p className="font-bold text-neutral truncate">
                       {user.displayName || "User"}
                     </p>
-                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {user.email}
+                    </p>
                     <span className="badge badge-xs badge-primary mt-1 uppercase font-bold text-[10px] py-1 px-2">
                       {role || "User"}
                     </span>
@@ -247,16 +246,13 @@ const Navbar = () => {
         </div>
       </Container>
 
-
       {/* ================= MOBILE MENU (Public Only) ================= */}
       {/* Logged in users use the avatar dropdown for navigation mainly, but if you want specific mobile menu for them we could add it. 
           Currently, for logged in users, the top-right avatar is accessible on mobile. 
           This section is for the PUBLIC horizontal links collapsing. */}
       {mobileMenuOpen && !user && (
         <div className="lg:hidden absolute top-full left-0 w-full bg-base-100 shadow-xl border-t border-base-200 p-4 flex flex-col gap-2">
-          <ul className="menu menu-vertical w-full text-base">
-            {publicLinks}
-          </ul>
+          <ul className="menu menu-vertical w-full text-base">{publicLinks}</ul>
         </div>
       )}
     </div>
