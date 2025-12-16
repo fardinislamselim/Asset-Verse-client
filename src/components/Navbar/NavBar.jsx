@@ -66,7 +66,8 @@ const Navbar = () => {
   };
 
   // --- Public Links ---
-  const publicLinks = (
+  // --- Common Links (Visible to everyone) ---
+  const commonLinks = (
     <>
       <li>
         <NavLink
@@ -83,7 +84,7 @@ const Navbar = () => {
       </li>
       <li>
         <NavLink
-          to="/register"
+          to="/assets"
           className={({ isActive }) =>
             `px-3 py-2 rounded-lg font-medium transition-colors ${
               isActive ? "text-primary bg-primary/10" : "hover:text-primary"
@@ -91,10 +92,27 @@ const Navbar = () => {
           }
           onClick={() => setMobileMenuOpen(false)}
         >
-          Join Free
+          Available Assets
         </NavLink>
       </li>
     </>
+  );
+
+  // --- Public Only Links (Visible only to non-logged in users) ---
+  const publicOnlyLinks = (
+    <li>
+      <NavLink
+        to="/register"
+        className={({ isActive }) =>
+          `px-3 py-2 rounded-lg font-medium transition-colors ${
+            isActive ? "text-primary bg-primary/10" : "hover:text-primary"
+          }`
+        }
+        onClick={() => setMobileMenuOpen(false)}
+      >
+        Join Free
+      </NavLink>
+    </li>
   );
 
   // --- Employee Menu Items ---
@@ -147,11 +165,10 @@ const Navbar = () => {
 
         {/* ================= CENTER: PUBLIC LINKS (Desktop) ================= */}
         <div className="navbar-center hidden lg:flex">
-          {!user && (
-            <ul className="menu menu-horizontal px-1 gap-2 text-base">
-              {publicLinks}
-            </ul>
-          )}
+          <ul className="menu menu-horizontal px-1 gap-2 text-base">
+            {commonLinks}
+            {!user && publicOnlyLinks}
+          </ul>
         </div>
 
         {/* ================= RIGHT: AUTH & UTILS ================= */}
@@ -250,9 +267,12 @@ const Navbar = () => {
       {/* Logged in users use the avatar dropdown for navigation mainly, but if you want specific mobile menu for them we could add it. 
           Currently, for logged in users, the top-right avatar is accessible on mobile. 
           This section is for the PUBLIC horizontal links collapsing. */}
-      {mobileMenuOpen && !user && (
+      {mobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 w-full bg-base-100 shadow-xl border-t border-base-200 p-4 flex flex-col gap-2">
-          <ul className="menu menu-vertical w-full text-base">{publicLinks}</ul>
+          <ul className="menu menu-vertical w-full text-base">
+            {commonLinks}
+            {!user && publicOnlyLinks}
+          </ul>
         </div>
       )}
     </div>

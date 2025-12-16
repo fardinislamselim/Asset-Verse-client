@@ -9,6 +9,8 @@ import MyTeam from "../pages/employee/MyTeam/MyTeam";
 import EmployeeProfile from "../pages/employee/Profile/Profile";
 import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 import RequestHistory from "../pages/employee/RequestHistory/RequestHistory";
+import AssetDetailsPublic from "../pages/Home/AssetDetailsPublic";
+import AvailableAssets from "../pages/Home/AvailableAssets";
 import Home from "../pages/Home/Home";
 import AddAsset from "../pages/HR/AddAsset/AddAsset";
 import AllRequests from "../pages/HR/AllRequests/AllRequests";
@@ -34,6 +36,8 @@ export const router = createBrowserRouter([
       },
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
+      { path: "assets", element: <AvailableAssets /> },
+      { path: "assets/:id", element: <AssetDetailsPublic /> },
     ],
   },
   {
