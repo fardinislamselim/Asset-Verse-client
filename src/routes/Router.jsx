@@ -23,6 +23,7 @@ import HRProfile from "../pages/HR/Profile/Profile";
 import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
 import Login from "../pages/Login/Login";
 import Register from "../pages/register/Register";
+import RoleRoute from "./RoleRoute";
 import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
@@ -44,7 +45,9 @@ export const router = createBrowserRouter([
     path: "hr",
     element: (
       <PrivateRoute>
-        <HrDashboard></HrDashboard>
+        <RoleRoute allowedRoles={["hr"]}>
+          <HrDashboard />
+        </RoleRoute>
       </PrivateRoute>
     ),
     children: [
@@ -90,7 +93,9 @@ export const router = createBrowserRouter([
     path: "employee",
     element: (
       <PrivateRoute>
-        <EmployeeDashboard></EmployeeDashboard>
+        <RoleRoute allowedRoles={["employee"]}>
+          <EmployeeDashboard />
+        </RoleRoute>
       </PrivateRoute>
     ),
     children: [
