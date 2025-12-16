@@ -190,7 +190,10 @@ const Navbar = () => {
             /* Logged In */
             <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => {
+                  setDropdownOpen(!dropdownOpen);
+                  setMobileMenuOpen(false);
+                }}
                 className="btn btn-ghost btn-circle avatar border-2 border-transparent hover:border-primary/20 transition-all"
               >
                 <div className="w-10 rounded-full">
@@ -252,14 +255,15 @@ const Navbar = () => {
           )}
 
           {/* Mobile Menu Button */}
-          {!user && (
-            <button
-              className="btn btn-ghost lg:hidden ml-2 text-2xl"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <FaTimes /> : <FaBars />}
-            </button>
-          )}
+          <button
+            className="btn btn-ghost lg:hidden ml-2 text-2xl"
+            onClick={() => {
+              setMobileMenuOpen(!mobileMenuOpen);
+              setDropdownOpen(false);
+            }}
+          >
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
         </div>
       </Container>
 
