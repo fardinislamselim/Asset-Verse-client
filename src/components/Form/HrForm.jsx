@@ -143,7 +143,7 @@ const HrForm = () => {
         <div className="form-control">
           <label className="label font-medium">Full Name *</label>
           <div className="relative">
-            <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
+            <FaUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-50" />
             <input
               type="text"
               placeholder="Full Name"
@@ -159,7 +159,7 @@ const HrForm = () => {
         <div className="form-control">
           <label className="label font-medium">Company Name *</label>
           <div className="relative">
-            <FaBuilding className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
+            <FaBuilding className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-50" />
             <input
               type="text"
               placeholder="Company Name"
@@ -179,7 +179,7 @@ const HrForm = () => {
         <div className="form-control">
           <label className="label font-medium">Company Logo *</label>
           <div className="relative">
-            <FaImage className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
+            <FaImage className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-50" />
             <input
               type="file"
               accept="image/*"
