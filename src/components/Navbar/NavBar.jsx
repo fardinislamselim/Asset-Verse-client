@@ -11,7 +11,7 @@ import {
   RiTeamLine,
   RiUser3Line,
   RiVipCrownLine,
-} from "react-icons/ri"; // Import icons
+} from "react-icons/ri";
 import { Link, NavLink, useNavigate } from "react-router";
 import logo from "../../assets/logo.png";
 import useAuth from "../../hook/useAuth";
@@ -27,7 +27,6 @@ const Navbar = () => {
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
-  // Fetch user role from MongoDB
   const { data: dbUser = {}, isLoading: isRoleLoading } = useQuery({
     queryKey: ["user-role", user?.email],
     enabled: !!user?.email && !loading,
@@ -39,7 +38,6 @@ const Navbar = () => {
 
   const role = dbUser?.role;
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (
@@ -65,8 +63,6 @@ const Navbar = () => {
       .catch((err) => toast.error("Failed to log out!", err.message));
   };
 
-  // --- Public Links ---
-  // --- Common Links (Visible to everyone) ---
   const commonLinks = (
     <>
       <li>
@@ -82,23 +78,25 @@ const Navbar = () => {
           Home
         </NavLink>
       </li>
-      <li>
-        <NavLink
-          to="/assets"
-          className={({ isActive }) =>
-            `px-3 py-2 rounded-lg font-medium transition-colors ${
-              isActive ? "text-primary bg-primary/10" : "hover:text-primary"
-            }`
-          }
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          Available Assets
-        </NavLink>
-      </li>
+
+      {role === "employee" && (
+        <li>
+          <NavLink
+            to="/assets"
+            className={({ isActive }) =>
+              `px-3 py-2 rounded-lg font-medium transition-colors ${
+                isActive ? "text-primary bg-primary/10" : "hover:text-primary"
+              }`
+            }
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Available Assets
+          </NavLink>
+        </li>
+      )}
     </>
   );
 
-  // --- Public Only Links (Visible only to non-logged in users) ---
   const publicOnlyLinks = (
     <li>
       <NavLink
@@ -115,7 +113,6 @@ const Navbar = () => {
     </li>
   );
 
-  // --- Employee Menu Items ---
   const employeeMenu = [
     { to: "/employee/dashboard", text: "Dashboard", icon: RiDashboardLine },
     { to: "/employee/my-asset", text: "My Assets", icon: RiFileList3Line },
@@ -128,7 +125,6 @@ const Navbar = () => {
     { to: "/employee/profile", text: "Profile", icon: RiUser3Line },
   ];
 
-  // --- HR Manager Menu Items ---
   const hrMenu = [
     { to: "/hr/", text: "Dashboard", icon: RiDashboardLine },
     { to: "/hr/my-asset", text: "Asset List", icon: RiFileList3Line },
@@ -149,7 +145,6 @@ const Navbar = () => {
   return (
     <div className="backdrop-blur-xl bg-base-100/90 shadow-sm sticky top-0 z-50 border-b border-base-200">
       <Container className="navbar py-3 px-4 lg:px-8">
-        {/* ================= LEFT: LOGO ================= */}
         <div className="navbar-start w-auto">
           <Link to="/" className="flex items-center gap-2 group">
             <img
@@ -163,7 +158,6 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* ================= CENTER: PUBLIC LINKS (Desktop) ================= */}
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 gap-2 text-base">
             {commonLinks}
@@ -171,15 +165,12 @@ const Navbar = () => {
           </ul>
         </div>
 
-        {/* ================= RIGHT: AUTH & UTILS ================= */}
         <div className="navbar-end flex items-center gap-3 ml-auto w-auto">
           <ThemeToggle />
 
-          {/* Loading State */}
           {loading || (user && isRoleLoading) ? (
             <span className="loading loading-spinner text-primary"></span>
           ) : !user ? (
-            /* Not Logged In */
             <Link
               to="/login"
               className="btn btn-primary px-6 rounded-lg font-bold shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
@@ -187,7 +178,6 @@ const Navbar = () => {
               Login
             </Link>
           ) : (
-            /* Logged In */
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => {
@@ -204,11 +194,8 @@ const Navbar = () => {
                   )}
                 </div>
               </button>
-
-              {/* Dropdown Menu */}
               {dropdownOpen && (
                 <div className="absolute right-0 mt-4 w-60 bg-base-100 rounded-2xl shadow-2xl border border-base-200 overflow-hidden transform origin-top-right transition-all">
-                  {/* User Header */}
                   <div className="px-6 py-4 bg-base-200/50 border-b border-base-200">
                     <p className="font-bold text-neutral truncate">
                       {user.displayName || "User"}
@@ -221,7 +208,6 @@ const Navbar = () => {
                     </span>
                   </div>
 
-                  {/* Menu Items */}
                   <ul className="py-2">
                     {menuItems.map((item, idx) => (
                       <li key={idx}>
@@ -238,7 +224,6 @@ const Navbar = () => {
 
                     <div className="divider my-1 px-4"></div>
 
-                    {/* Logout */}
                     <li>
                       <button
                         onClick={handleSignOut}
@@ -254,7 +239,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Mobile Menu Button */}
           <button
             className="btn btn-ghost lg:hidden ml-2 text-2xl"
             onClick={() => {
@@ -267,10 +251,6 @@ const Navbar = () => {
         </div>
       </Container>
 
-      {/* ================= MOBILE MENU (Public Only) ================= */}
-      {/* Logged in users use the avatar dropdown for navigation mainly, but if you want specific mobile menu for them we could add it. 
-          Currently, for logged in users, the top-right avatar is accessible on mobile. 
-          This section is for the PUBLIC horizontal links collapsing. */}
       {mobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 w-full bg-base-100 shadow-xl border-t border-base-200 p-4 flex flex-col gap-2">
           <ul className="menu menu-vertical w-full text-base">

@@ -1,7 +1,6 @@
-import React from "react";
-import useAxiosSecure from "../../../hook/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../../../components/LoadingSpinner";
+import useAxiosSecure from "../../../hook/useAxiosSecure";
 
 const RequestHistory = () => {
   const axiosSecure = useAxiosSecure();
@@ -47,53 +46,100 @@ const RequestHistory = () => {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg">
-          <table className="table table-zebra">
-            <thead className="bg-base-200 text-base">
-              <tr>
-                <th>#</th>
-                <th>Asset</th>
-                <th>Type</th>
-                <th>Company</th>
-                <th>Note</th>
-                <th>Request Date</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((req, index) => (
-                <tr key={req._id} className="hover">
-                  <td>{index + 1}</td>
-                  <td className="font-semibold">{req.assetName}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        req.assetType === "Returnable"
-                          ? "badge-success"
-                          : "badge-error"
-                      } badge-outline`}
-                    >
-                      {req.assetType}
-                    </span>
-                  </td>
-                  <td>{req.companyName}</td>
-                  <td className="max-w-xs truncate">{req.note || "-"}</td>
-                  <td>{new Date(req.requestDate).toLocaleDateString()}</td>
-                  <td>
-                    <span
-                      className={`badge badge-lg ${getStatusBadge(
-                        req.requestStatus
-                      )}`}
-                    >
-                      {req.requestStatus.charAt(0).toUpperCase() +
-                        req.requestStatus.slice(1)}
-                    </span>
-                  </td>
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-xl shadow-lg">
+            <table className="table table-zebra">
+              <thead className="bg-base-200 text-base">
+                <tr>
+                  <th>#</th>
+                  <th>Asset</th>
+                  <th>Type</th>
+                  <th>Company</th>
+                  <th>Note</th>
+                  <th>Request Date</th>
+                  <th>Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {requests.map((req, index) => (
+                  <tr key={req._id} className="hover">
+                    <td>{index + 1}</td>
+                    <td className="font-semibold">{req.assetName}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          req.assetType === "Returnable"
+                            ? "badge-success"
+                            : "badge-error"
+                        } badge-outline`}
+                      >
+                        {req.assetType}
+                      </span>
+                    </td>
+                    <td>{req.companyName}</td>
+                    <td className="max-w-xs truncate">{req.note || "-"}</td>
+                    <td>{new Date(req.requestDate).toLocaleDateString()}</td>
+                    <td>
+                      <span
+                        className={`badge badge-lg ${getStatusBadge(
+                          req.requestStatus
+                        )}`}
+                      >
+                        {req.requestStatus.charAt(0).toUpperCase() +
+                          req.requestStatus.slice(1)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
+            {requests.map((req) => (
+              <div key={req._id} className="card bg-base-100 shadow-xl border border-base-200">
+                <div className="card-body p-5">
+                  <div className="flex justify-between items-start mb-2">
+                     <h3 className="card-title text-base">{req.assetName}</h3>
+                     <span
+                        className={`badge badge-sm ${getStatusBadge(
+                          req.requestStatus
+                        )}`}
+                      >
+                        {req.requestStatus}
+                      </span>
+                  </div>
+
+                  <div className="flex justify-between items-center text-sm text-gray-500 mb-2">
+                    <span>{req.companyName}</span>
+                    <span>{new Date(req.requestDate).toLocaleDateString()}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs font-semibold">Type:</span>
+                     <span
+                        className={`badge ${
+                          req.assetType === "Returnable"
+                            ? "badge-success"
+                            : "badge-error"
+                        } badge-xs badge-outline`}
+                      >
+                        {req.assetType}
+                      </span>
+                  </div>
+
+                  {req.note && (
+                     <div className="bg-base-200 p-3 rounded-lg text-xs text-gray-600 italic">
+                        "{req.note}"
+                     </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Summary Stats */}

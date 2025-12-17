@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import debounce from "lodash.debounce";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 import { Link } from "react-router";
 import useAuth from "../../../hook/useAuth";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import debounce from "lodash.debounce";
 
 const AssetList = () => {
   const { user } = useAuth();
@@ -44,7 +44,7 @@ const AssetList = () => {
       return res.data; // { assets, pagination }
     },
     enabled: !!user?.email,
-    keepPreviousData: true, // Smooth loading between pages
+    placeholderData: keepPreviousData, // Smooth loading between pages
   });
 
   const { assets = [], pagination = {} } = response;
@@ -117,60 +117,137 @@ const AssetList = () => {
         )}
       </div>
 
-      {/* Assets Table */}
-      <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg mb-10">
-        <table className="table table-zebra">
-          <thead className="bg-base-200 text-base">
-            <tr>
-              <th>#</th>
-              <th>Image</th>
-              <th>Asset Name</th>
-              <th>Type</th>
-              <th className="text-center">Total Qty</th>
-              <th className="text-center">Available</th>
-              <th>Added On</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {assets.length === 0 ? (
+      {/* Assets List (Responsive: Cards for Mobile/Tablet, Table for Desktop) */}
+      <div className="mb-10">
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-xl shadow-lg">
+          <table className="table table-zebra">
+            <thead className="bg-base-200 text-base">
               <tr>
-                <td colSpan="8" className="text-center py-12 text-gray-500">
-                  {isFetching ? "Searching..." : "No assets found."}
-                </td>
+                <th>#</th>
+                <th>Image</th>
+                <th>Asset Name</th>
+                <th>Type</th>
+                <th className="text-center">Total Qty</th>
+                <th className="text-center">Available</th>
+                <th>Added On</th>
+                <th>Actions</th>
               </tr>
-            ) : (
-              assets.map((asset, index) => (
-                <tr key={asset._id} className="hover">
-                  <td>{(currentPage - 1) * limit + index + 1}</td>
-                  <td>
+            </thead>
+            <tbody>
+              {assets.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="text-center py-12 text-gray-500">
+                    {isFetching ? "Searching..." : "No assets found."}
+                  </td>
+                </tr>
+              ) : (
+                assets.map((asset, index) => (
+                  <tr key={asset._id} className="hover">
+                    <td>{(currentPage - 1) * limit + index + 1}</td>
+                    <td>
+                      <img
+                        src={asset.productImage || "/placeholder-image.jpg"}
+                        alt={asset.productName}
+                        className="w-14 h-14 object-cover rounded-lg"
+                        onError={(e) => (e.target.src = "/fallback-image.jpg")}
+                      />
+                    </td>
+                    <td className="font-semibold">{asset.productName}</td>
+                    <td>
+                      <span
+                        className={`badge badge-lg ${
+                          asset.productType === "Returnable"
+                            ? "badge-success"
+                            : "badge-error"
+                        }`}
+                      >
+                        {asset.productType}
+                      </span>
+                    </td>
+                    <td className="text-center font-medium">
+                      {asset.productQuantity}
+                    </td>
+                    <td className="text-center font-bold text-primary">
+                      {asset.availableQuantity}
+                    </td>
+                    <td>{new Date(asset.createdAt).toLocaleDateString()}</td>
+                    <td className="space-x-2">
+                      <Link
+                        to={`/hr/edit-asset/${asset._id}`}
+                        className="btn btn-sm btn-warning"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(asset._id)}
+                        disabled={deletingId === asset._id}
+                        className="btn btn-sm btn-error"
+                      >
+                        {deletingId === asset._id ? (
+                          <span className="loading loading-spinner loading-xs"></span>
+                        ) : (
+                          "Delete"
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile/Tablet Card View */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
+          {assets.length === 0 ? (
+            <div className="col-span-1 md:col-span-2 text-center py-12 text-gray-500 bg-base-100 rounded-xl shadow-lg">
+              {isFetching ? "Searching..." : "No assets found."}
+            </div>
+          ) : (
+            assets.map((asset) => (
+              <div
+                key={asset._id}
+                className="card bg-base-100 shadow-xl border border-base-200"
+              >
+                <div className="card-body p-5">
+                  <div className="flex items-center gap-4 mb-4">
                     <img
                       src={asset.productImage || "/placeholder-image.jpg"}
                       alt={asset.productName}
-                      className="w-14 h-14 object-cover rounded-lg"
+                      className="w-16 h-16 object-cover rounded-xl"
                       onError={(e) => (e.target.src = "/fallback-image.jpg")}
                     />
-                  </td>
-                  <td className="font-semibold">{asset.productName}</td>
-                  <td>
-                    <span
-                      className={`badge badge-lg ${
-                        asset.productType === "Returnable"
-                          ? "badge-success"
-                          : "badge-error"
-                      }`}
-                    >
-                      {asset.productType}
-                    </span>
-                  </td>
-                  <td className="text-center font-medium">
-                    {asset.productQuantity}
-                  </td>
-                  <td className="text-center font-bold text-primary">
-                    {asset.availableQuantity}
-                  </td>
-                  <td>{new Date(asset.createdAt).toLocaleDateString()}</td>
-                  <td className="space-x-2">
+                    <div>
+                      <h3 className="card-title text-lg">{asset.productName}</h3>
+                      <p className="text-sm text-gray-500">
+                        Added: {new Date(asset.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-sm mb-4">
+                    <div className="flex flex-col">
+                      <span className="text-gray-500">Type</span>
+                      <span
+                        className={`badge badge-sm mt-1 h-auto py-1 ${
+                          asset.productType === "Returnable"
+                            ? "badge-success"
+                            : "badge-error"
+                        }`}
+                      >
+                        {asset.productType}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-gray-500">Quantity</span>
+                      <span className="font-semibold">
+                         {asset.availableQuantity} / {asset.productQuantity}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="card-actions justify-end mt-2">
                     <Link
                       to={`/hr/edit-asset/${asset._id}`}
                       className="btn btn-sm btn-warning"
@@ -188,12 +265,12 @@ const AssetList = () => {
                         "Delete"
                       )}
                     </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* Pagination Controls */}

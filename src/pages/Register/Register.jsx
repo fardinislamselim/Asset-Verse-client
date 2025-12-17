@@ -1,11 +1,11 @@
-import { useState } from "react";
-import EmployeeForm from "../../components/Form/EmployeeForm";
-import HrForm from "../../components/Form/HrForm";
-import {motion,  AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Lottie from "lottie-react";
-import { FaUserTie, FaUser } from "react-icons/fa";
+import { useState } from "react";
+import { FaUser, FaUserTie } from "react-icons/fa";
 import registerAnimation from "../../assets/Lottie/register.json";
 import Container from "../../components/Container/Container";
+import EmployeeForm from "../../components/Form/EmployeeForm";
+import HrForm from "../../components/Form/HrForm";
 
 const Register = () => {
   const [role, setRole] = useState("employee");
@@ -13,7 +13,7 @@ const Register = () => {
   return (
     <div className="bg-base-100">
       {" "}
-      <Container className="flex justify-between h-full ">
+      <Container className="flex flex-col lg:flex-row justify-between h-full ">
         {/* Left Side: Form Section */}
         <div className="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-center text-base-content mb-6">

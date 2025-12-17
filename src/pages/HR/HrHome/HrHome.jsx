@@ -177,55 +177,104 @@ const HrHome = () => {
             <button className="btn btn-sm btn-ghost">View All</button>
           </div>
           
-          <div className="overflow-x-auto">
-            <table className="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>Requestor</th>
-                  <th>Asset</th>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentRequests.length === 0 ? (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="table table-zebra w-full">
+                <thead>
                   <tr>
-                    <td colSpan="5" className="text-center py-8 text-gray-500">
-                      No recent requests found.
-                    </td>
+                    <th>Requestor</th>
+                    <th>Asset</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Status</th>
                   </tr>
-                ) : (
-                  recentRequests.map((req) => (
-                    <tr key={req._id}>
-                      <td>
-                        <div>
-                          <div className="font-bold">{req.requesterName}</div>
-                          <div className="text-xs opacity-50">{req.requesterEmail}</div>
-                        </div>
-                      </td>
-                      <td>{req.assetName}</td>
-                      <td>{req.assetType}</td>
-                      <td>{new Date(req.requestDate).toLocaleDateString()}</td>
-                      <td>
-                        <span
-                          className={`badge ${
-                            req.requestStatus === "pending"
-                              ? "badge-warning"
-                              : req.requestStatus === "approved"
-                              ? "badge-success text-white"
-                              : "badge-error text-white"
-                          }`}
-                        >
-                          {req.requestStatus}
-                        </span>
+                </thead>
+                <tbody>
+                  {recentRequests.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-8 text-gray-500">
+                        No recent requests found.
                       </td>
                     </tr>
+                  ) : (
+                    recentRequests.map((req) => (
+                      <tr key={req._id}>
+                        <td>
+                          <div>
+                            <div className="font-bold">{req.requesterName}</div>
+                            <div className="text-xs opacity-50">{req.requesterEmail}</div>
+                          </div>
+                        </td>
+                        <td>{req.assetName}</td>
+                        <td>{req.assetType}</td>
+                        <td>{new Date(req.requestDate).toLocaleDateString()}</td>
+                        <td>
+                          <span
+                            className={`badge ${
+                              req.requestStatus === "pending"
+                                ? "badge-warning"
+                                : req.requestStatus === "approved"
+                                ? "badge-success text-white"
+                                : "badge-error text-white"
+                            }`}
+                          >
+                            {req.requestStatus}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden flex flex-col gap-4">
+               {recentRequests.length === 0 ? (
+                  <p className="text-center py-8 text-gray-500">
+                    No recent requests found.
+                  </p>
+                ) : (
+                  recentRequests.map((req) => (
+                    <div key={req._id} className="card bg-base-100 border border-base-200 shadow-sm p-4">
+                       <div className="flex justify-between items-start mb-3">
+                          <div>
+                             <h4 className="font-bold">{req.assetName}</h4>
+                             <p className="text-xs text-gray-500">{req.assetType}</p>
+                          </div>
+                          <span
+                            className={`badge ${
+                              req.requestStatus === "pending"
+                                ? "badge-warning"
+                                : req.requestStatus === "approved"
+                                ? "badge-success text-white"
+                                : "badge-error text-white"
+                            } badge-sm`}
+                          >
+                            {req.requestStatus}
+                          </span>
+                       </div>
+                       
+                       <div className="flex items-center gap-3">
+                          <div className="avatar placeholder">
+                             <div className="bg-neutral text-neutral-content rounded-full w-8">
+                                <span className="text-xs">{req.requesterName.charAt(0)}</span>
+                             </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                             <p className="text-sm font-semibold truncate">{req.requesterName}</p>
+                             <p className="text-xs text-gray-400 truncate">{req.requesterEmail}</p>
+                          </div>
+                          <p className="text-xs text-gray-400">
+                             {new Date(req.requestDate).toLocaleDateString()}
+                          </p>
+                       </div>
+                    </div>
                   ))
                 )}
-              </tbody>
-            </table>
-          </div>
+            </div>
+          </>
         </div>
       </div>
     </div>

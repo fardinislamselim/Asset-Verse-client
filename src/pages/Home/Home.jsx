@@ -9,7 +9,7 @@ import Testimonials from "./components/Testimonials";
 
 const Home = () => {
   return (
-    <div className="bg-base-100 text-base-content font-sans overflow-x-hidden">
+    <div className="bg-base-100 text-base-content font-sans">
       <Hero />
       <About />
       <Packages />

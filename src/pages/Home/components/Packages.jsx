@@ -38,7 +38,7 @@ const Packages = () => {
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                 className={`relative p-8 rounded-3xl bg-base-100 shadow-xl border-2 flex flex-col ${
                   idx === 1
-                    ? "border-primary scale-105 z-10"
+                    ? "border-primary md:scale-105 z-10"
                     : "border-transparent"
                 }`}
               >
