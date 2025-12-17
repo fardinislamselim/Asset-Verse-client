@@ -126,7 +126,7 @@ const Navbar = () => {
   ];
 
   const hrMenu = [
-    { to: "/hr/", text: "Dashboard", icon: RiDashboardLine },
+    { to: "/hr/dashboard", text: "Dashboard", icon: RiDashboardLine },
     { to: "/hr/my-asset", text: "Asset List", icon: RiFileList3Line },
     { to: "/hr/add-asset", text: "Add Asset", icon: RiAddCircleLine },
     { to: "/hr/requests", text: "All Requests", icon: RiHistoryLine },

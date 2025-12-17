@@ -51,10 +51,7 @@ const Hero = () => {
               to="/register"
               className="btn btn-primary btn-lg shadow-xl hover:shadow-2xl transition-all"
             >
-              Join as HR Manager
-            </Link>
-            <Link to="/register" className="btn btn-outline btn-lg border-2">
-              Join as Employee
+              Join For Free
             </Link>
           </motion.div>
         </motion.div>

@@ -1,3 +1,8 @@
+import react from "react"
+import amazon from "../../../assets/amazon.png"
+import casio from "../../../assets/casio.png"
+import start_people from "../../../assets/start-people.png"
+import start from "../../../assets/start.png"
 
 const Testimonials = () => {
   return (
@@ -48,16 +53,28 @@ const Testimonials = () => {
           </div>
 
           {/* Decorative Grid of Logos (Mock) */}
-          <div className="grid grid-cols-2 gap-4 opacity-50">
-            {[1, 2, 3, 4].map((n) => (
-              <div
-                key={n}
-                className="bg-white/10 h-32 rounded-xl flex items-center justify-center text-2xl font-bold tracking-widest text-center"
-              >
-                LOGO {n}
+          {/* Replace placeholder numbers with actual logo images */}
+          {(() => {
+            const logoUrls = [
+              amazon,
+              casio,
+              start_people,
+              start,
+            ];
+            return (
+              <div className="grid grid-cols-2 gap-4 opacity-50">
+                {logoUrls.map((url, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white/10 h-32 rounded-xl flex items-center justify-center"
+                  >
+                    <img src={url} alt={`Logo ${idx + 1}`} className="h-full object-contain" />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            );
+          })()}
+
         </div>
       </div>
     </section>
