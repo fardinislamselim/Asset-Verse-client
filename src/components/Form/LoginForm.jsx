@@ -33,6 +33,7 @@ const LoginForm = () => {
       const errorMap = {
         "auth/user-not-found": "No account found with this email 📧",
         "auth/wrong-password": "Incorrect password 🔒",
+        "auth/invalid-credential": "Invalid email or password ❌",
         "auth/invalid-email": "Invalid email address ❌",
         "auth/user-disabled": "This account has been disabled 🚫",
         "auth/too-many-requests": "Too many failed attempts, try again later ⏳",
