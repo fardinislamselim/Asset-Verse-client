@@ -1,18 +1,18 @@
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import axios from "axios";
-import { Link } from "react-router";
 import {
-  FaUser,
-  FaBuilding,
-  FaImage,
-  FaEnvelope,
-  FaLock,
-  FaCalendarAlt,
-  FaEye,
-  FaEyeSlash,
+    FaBuilding,
+    FaCalendarAlt,
+    FaEnvelope,
+    FaEye,
+    FaEyeSlash,
+    FaImage,
+    FaLock,
+    FaUser,
 } from "react-icons/fa";
+import { Link } from "react-router";
 import useAuth from "../../hook/useAuth";
 import useAxiosSecure from "../../hook/useAxiosSecure";
 
@@ -22,6 +22,10 @@ const HrForm = () => {
 
   const [uploading, setUploading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/hr/dashboard";
 
   const {
     register,
@@ -110,6 +114,7 @@ const HrForm = () => {
       if (res.data?.insertedId || res.data?.acknowledged) {
         toast.success("HR Registered Successfully ✅");
         reset();
+        navigate(from, { replace: true });
       } else {
         toast.error("HR saved but unexpected response ⚠️");
       }

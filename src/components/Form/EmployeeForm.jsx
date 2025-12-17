@@ -1,15 +1,15 @@
-import React, { useState } from "react";
 import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
-  FaCalendarAlt,
-  FaEnvelope,
-  FaEye,
-  FaEyeSlash,
-  FaImage,
-  FaLock,
-  FaUser,
+    FaCalendarAlt,
+    FaEnvelope,
+    FaEye,
+    FaEyeSlash,
+    FaImage,
+    FaLock,
+    FaUser,
 } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router";
 
@@ -25,7 +25,7 @@ const EmployeeForm = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/employee/dashboard";
 
   const {
     register,
@@ -41,7 +41,7 @@ const EmployeeForm = () => {
     import.meta.env.VITE_IMGBB_API_KEY
   }`;
 
-  // ✅ Professional Firebase Error Handler
+  // Professional Firebase Error Handler
   const showFirebaseError = (error) => {
     let message = "Something went wrong ❌";
 
@@ -62,7 +62,7 @@ const EmployeeForm = () => {
     toast.error(message);
   };
 
-  // ✅ Professional Submit Handler
+  // Professional Submit Handler
   const onSubmit = async (data) => {
     try {
       setUploading(true);
@@ -73,10 +73,10 @@ const EmployeeForm = () => {
         return;
       }
 
-      // 1️⃣ Firebase Registration
+      // Firebase Registration
       await registerUser(data.email, data.password);
 
-      // 2️⃣ Upload Image to ImgBB
+      // Upload Image to ImgBB
       const formData = new FormData();
       formData.append("image", profileImg);
 
@@ -88,13 +88,13 @@ const EmployeeForm = () => {
 
       const photoURL = imgRes.data.data.url;
 
-      // 3️⃣ Update Firebase Profile
+      //  Update Firebase Profile
       await updateUserProfile({
         displayName: data.name,
         photoURL,
       });
 
-      // 4️⃣ Prepare Employee Data
+      //  Prepare Employee Data
       const employeeInfo = {
         name: data.name.trim(),
         email: data.email.toLowerCase(),
@@ -105,7 +105,7 @@ const EmployeeForm = () => {
         status: "active",
       };
 
-      // 5️⃣ Save to Backend
+      //  Save to Backend
       const res = await axiosSecure.post("/users", employeeInfo);
 
       if (res.data?.insertedId || res.data?.acknowledged) {
