@@ -17,6 +17,10 @@ const RoleRoute = ({ children, allowedRoles }) => {
     return children;
   }
 
+  if (user) {
+    return <Navigate to="/forbidden" replace />;
+  }
+
   return <Navigate to="/login" state={{ from: location }} replace />;
 };
 

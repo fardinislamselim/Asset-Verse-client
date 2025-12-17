@@ -9,6 +9,8 @@ import MyTeam from "../pages/employee/MyTeam/MyTeam";
 import EmployeeProfile from "../pages/employee/Profile/Profile";
 import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 import RequestHistory from "../pages/employee/RequestHistory/RequestHistory";
+import ErrorPage from "../pages/ErrorPage";
+import Forbidden from "../pages/Forbidden";
 import AssetDetailsPublic from "../pages/Home/AssetDetailsPublic";
 import AvailableAssets from "../pages/Home/AvailableAssets";
 import Home from "../pages/Home/Home";
@@ -26,8 +28,6 @@ import Register from "../pages/register/Register";
 import PrivateRoute from "./PrivateRoute";
 import RoleRoute from "./RoleRoute";
 
-import ErrorPage from "../pages/ErrorPage";
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -42,6 +42,7 @@ export const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "assets", element: <AvailableAssets /> },
       { path: "assets/:id", element: <AssetDetailsPublic /> },
+      { path: "forbidden", element: <Forbidden /> },
     ],
   },
   {
