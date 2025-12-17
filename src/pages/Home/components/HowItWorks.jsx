@@ -6,7 +6,7 @@ const HowItWorks = () => {
         <h2 className="text-4xl font-bold text-neutral mb-16">How It Works</h2>
 
         <div className="grid md:grid-cols-3 gap-12 relative">
-          {/* Connecting Line (Desktop) */}
+          
           <div className="hidden md:block absolute top-8 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent -z-10"></div>
 
           {[

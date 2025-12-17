@@ -21,7 +21,6 @@ const MyAssets = () => {
     },
   });
 
-  // Filter logic
   const filteredAssets = assets.filter((asset) => {
     const matchesSearch = asset.assetName
       .toLowerCase()
@@ -52,7 +51,6 @@ const MyAssets = () => {
     <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-4xl font-bold mb-8">My Assets</h1>
 
-      {/* Search + Filter */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <input
           type="text"
@@ -72,14 +70,13 @@ const MyAssets = () => {
         </select>
       </div>
 
-      {/* Table */}
       {filteredAssets.length === 0 ? (
         <div className="text-center py-20 text-xl text-gray-500">
           No assets assigned yet
         </div>
       ) : (
         <>
-          {/* Desktop Table */}
+          
           <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-xl shadow-lg">
             <table className="table table-zebra">
               <thead className="bg-base-200">
@@ -132,7 +129,6 @@ const MyAssets = () => {
             </table>
           </div>
 
-          {/* Mobile Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
             {filteredAssets.map((asset) => (
               <div key={asset._id} className="card bg-base-100 shadow-xl border border-base-200">

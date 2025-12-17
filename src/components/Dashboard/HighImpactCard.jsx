@@ -8,7 +8,7 @@ const HighImpactCard = ({
   variant = "primary", // primary, secondary, accent, warning, error, info
   delay = 0,
 }) => {
-  // Define gradient and color styles based on variant
+
   const variants = {
     primary: "from-primary/10 to-primary/5 text-primary border-primary/20",
     secondary:
@@ -50,14 +50,12 @@ const HighImpactCard = ({
         )}
       </div>
 
-      {/* Decorative Background Icon */}
       {Icon && (
         <div className="absolute -bottom-4 -right-4 text-9xl opacity-5 transform rotate-12 z-0 pointer-events-none">
           <Icon />
         </div>
       )}
 
-       {/* Decorative Gradient Blob */}
        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-white/20 blur-3xl rounded-full pointer-events-none"></div>
     </motion.div>
   );

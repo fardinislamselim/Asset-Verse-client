@@ -7,7 +7,7 @@ import start from "../../../assets/start.png"
 const Testimonials = () => {
   return (
     <section className="py-24 bg-neutral text-neutral-content relative overflow-hidden">
-      {/* Decorative Pattern */}
+      
       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
 
       <div className="container mx-auto px-6 relative z-10">
@@ -52,8 +52,6 @@ const Testimonials = () => {
             </div>
           </div>
 
-          {/* Decorative Grid of Logos (Mock) */}
-          {/* Replace placeholder numbers with actual logo images */}
           {(() => {
             const logoUrls = [
               amazon,

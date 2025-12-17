@@ -13,7 +13,6 @@ const AssetDetails = () => {
   const [note, setNote] = useState("");
   const [requestLoading, setRequestLoading] = useState(false);
 
-  // Fetch asset details
   const { data: asset, isPending, isError } = useQuery({
     queryKey: ["asset", id],
     queryFn: async () => {
@@ -42,7 +41,7 @@ const AssetDetails = () => {
         note,
       });
       toast.success("Request sent successfully!");
-      navigate("/employee/request-asset"); // Redirect back to list
+      navigate("/employee/request-asset");
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || "Failed to send request.");

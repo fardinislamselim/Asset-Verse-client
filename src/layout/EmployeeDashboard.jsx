@@ -30,11 +30,7 @@ const EmployeeDashboard = () => {
       icon: RiHistoryLine,
       text: "Requests History",
     },
-    // {
-    //   to: "/employee/monthly-requests",
-    //   icon: RiFileList3Line,
-    //   text: "Monthly Requests",
-    // },
+
     {
       to: "/employee/my-team",
       icon: RiTeamLine,
@@ -46,9 +42,6 @@ const EmployeeDashboard = () => {
     <div className="drawer lg:drawer-open bg-base-100">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
-      {/* ======================================= */}
-      {/* 1. Main Content & Navbar (Drawer Content) */}
-      {/* ======================================= */}
       <div className="drawer-content min-h-screen flex flex-col">
         <nav className="navbar w-full bg-base-100 shadow-lg sticky top-0 z-20">
           <div className="flex-none lg:hidden">
@@ -74,7 +67,7 @@ const EmployeeDashboard = () => {
           </div>
 
           <div className="flex justify-between items-center w-full px-4 lg:px-8">
-            {/* Mobile Logo */}
+            
             <Link
               to="/"
               className="flex items-center gap-2 text-xl font-bold text-neutral lg:hidden"
@@ -135,15 +128,11 @@ const EmployeeDashboard = () => {
           </div>
         </nav>
 
-        {/* Page content here */}
         <main className="p-4 lg:p-8 flex-grow">
           <Outlet />
         </main>
       </div>
 
-      {/* ======================================= */}
-      {/* 2. Sidebar (Drawer Side) */}
-      {/* ======================================= */}
       <div className="drawer-side z-30 shadow-2xl">
         <label
           htmlFor="my-drawer-4"
@@ -152,7 +141,7 @@ const EmployeeDashboard = () => {
         ></label>
 
         <div className="w-64 bg-base-200 min-h-full p-4 flex flex-col">
-          {/* Sidebar Branding */}
+          
           <Link
             to="/"
             className="flex items-center gap-3 mb-8 px-4 py-3 border-b border-base-300"
@@ -167,7 +156,6 @@ const EmployeeDashboard = () => {
             </h3>
           </Link>
 
-          {/* Sidebar Menu */}
           <ul className="menu text-base font-semibold space-y-2 flex-grow">
             <li className="menu-title">Employee Actions</li>
             {employeeLinks.map((item, i) => (

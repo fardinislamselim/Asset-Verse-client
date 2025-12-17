@@ -3,7 +3,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router";
 
 const Hero = () => {
-  // Animation Variants
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
@@ -21,7 +21,7 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-base-100 to-base-200 overflow-hidden">
-      {/* Abstract Background Shapes */}
+      
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-secondary/10 rounded-full blur-3xl"></div>
 
@@ -67,7 +67,7 @@ const Hero = () => {
             alt="Asset Management Dashboard"
             className="rounded-3xl shadow-2xl border-4 border-base-100 w-full max-w-lg"
           />
-          {/* Floating stat card */}
+          
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ repeat: Infinity, duration: 4 }}

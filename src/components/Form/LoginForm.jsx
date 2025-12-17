@@ -1,4 +1,4 @@
-// LoginForm.jsx
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -16,7 +16,6 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get the path from location.state.from.pathname if user was redirected
   const from = location.state?.from?.pathname;
 
   const {
@@ -30,23 +29,25 @@ const LoginForm = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      // 1. Sign in the user
+
       await signInUser(data.email, data.password);
-      
-      // 2. Fetch user role from backend
-      const res = await axiosSecure.get("/user");
-      const userRole = res.data?.role;
 
-      toast.success("Login successful ✅");
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      // 3. Redirect based on role or 'from' location
       let redirectPath = from;
-      
+
       if (!redirectPath) {
-        // If no 'from' location, redirect based on role
-        redirectPath = userRole === "hr" ? "/hr/dashboard" : "/employee/dashboard";
+        try {
+          const res = await axiosSecure.get("/user");
+          const userRole = res.data?.role;
+          redirectPath = userRole === "hr" ? "/hr/dashboard" : "/employee/dashboard";
+        } catch (error) {
+          console.error("Failed to fetch user role:", error);
+          redirectPath = "/";
+        }
       }
 
+      toast.success("Login successful ✅");
       navigate(redirectPath, { replace: true });
       setLoading(false);
     } catch (err) {
@@ -62,7 +63,7 @@ const LoginForm = () => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Email */}
+
         <div className="form-control">
           <label className="label font-medium">Email *</label>
           <div className="relative">
@@ -85,7 +86,6 @@ const LoginForm = () => {
           )}
         </div>
 
-        {/* Password */}
         <div className="form-control">
           <label className="label font-medium">Password *</label>
           <div className="relative">
@@ -115,7 +115,6 @@ const LoginForm = () => {
           )}
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}

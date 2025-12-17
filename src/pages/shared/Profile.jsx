@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-// import useAuth from "../../hook/useAuth";
+
 import useAxiosSecure from "../../hook/useAxiosSecure";
 import useAuth from "../../hook/useAuth";
 
@@ -29,7 +29,6 @@ const Profile = () => {
       if (data.data.url) {
         setPreview(data.data.url);
 
-        // Update in DB
         await axiosSecure.patch("/user/profile", {
           profileImage: data.data.url,
         });

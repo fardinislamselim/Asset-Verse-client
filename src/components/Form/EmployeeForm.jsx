@@ -3,13 +3,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
-    FaCalendarAlt,
-    FaEnvelope,
-    FaEye,
-    FaEyeSlash,
-    FaImage,
-    FaLock,
-    FaUser,
+  FaCalendarAlt,
+  FaEnvelope,
+  FaEye,
+  FaEyeSlash,
+  FaImage,
+  FaLock,
+  FaUser,
 } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router";
 
@@ -41,7 +41,6 @@ const EmployeeForm = () => {
     import.meta.env.VITE_IMGBB_API_KEY
   }`;
 
-  // Professional Firebase Error Handler
   const showFirebaseError = (error) => {
     let message = "Something went wrong ❌";
 
@@ -62,7 +61,6 @@ const EmployeeForm = () => {
     toast.error(message);
   };
 
-  // Professional Submit Handler
   const onSubmit = async (data) => {
     try {
       setUploading(true);
@@ -73,10 +71,8 @@ const EmployeeForm = () => {
         return;
       }
 
-      // Firebase Registration
       await registerUser(data.email, data.password);
 
-      // Upload Image to ImgBB
       const formData = new FormData();
       formData.append("image", profileImg);
 
@@ -88,13 +84,11 @@ const EmployeeForm = () => {
 
       const photoURL = imgRes.data.data.url;
 
-      //  Update Firebase Profile
       await updateUserProfile({
         displayName: data.name,
         photoURL,
       });
 
-      //  Prepare Employee Data
       const employeeInfo = {
         name: data.name.trim(),
         email: data.email.toLowerCase(),
@@ -105,7 +99,6 @@ const EmployeeForm = () => {
         status: "active",
       };
 
-      //  Save to Backend
       const res = await axiosSecure.post("/users", employeeInfo);
 
       if (res.data?.insertedId || res.data?.acknowledged) {
@@ -139,7 +132,7 @@ const EmployeeForm = () => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Profile Picture */}
+
         <div className="form-control">
           <label className="label font-medium">Profile Picture *</label>
           <div className="relative">
@@ -160,7 +153,6 @@ const EmployeeForm = () => {
           )}
         </div>
 
-        {/* Full Name */}
         <div className="form-control">
           <label className="label font-medium">Full Name *</label>
           <div className="relative">
@@ -180,7 +172,6 @@ const EmployeeForm = () => {
           )}
         </div>
 
-        {/* Email */}
         <div className="form-control">
           <label className="label font-medium">Personal Email *</label>
           <div className="relative">
@@ -204,7 +195,6 @@ const EmployeeForm = () => {
           )}
         </div>
 
-        {/* Password */}
         <div className="form-control">
           <label className="label font-medium">Password *</label>
           <div className="relative">
@@ -234,7 +224,6 @@ const EmployeeForm = () => {
           )}
         </div>
 
-        {/* Date of Birth */}
         <div className="form-control">
           <label className="label font-medium">Date of Birth *</label>
           <div className="relative">
@@ -254,7 +243,6 @@ const EmployeeForm = () => {
           )}
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={uploading}

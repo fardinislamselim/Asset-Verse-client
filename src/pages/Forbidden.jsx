@@ -11,7 +11,7 @@ const Forbidden = () => {
           transition={{ duration: 0.5 }}
           className="relative mb-8"
         >
-          {/* Animated Lock Icon */}
+          
           <div className="relative inline-block">
             <motion.div
               className="text-9xl text-error opacity-20 absolute top-0 left-0 right-0 bottom-0 blur-2xl"

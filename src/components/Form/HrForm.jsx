@@ -12,7 +12,7 @@ import {
     FaLock,
     FaUser,
 } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useAuth from "../../hook/useAuth";
 import useAxiosSecure from "../../hook/useAxiosSecure";
 
@@ -40,7 +40,6 @@ const HrForm = () => {
   const focusStyle =
     "focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary";
 
-  // ✅ Proper Firebase Error Handler
   const showFirebaseError = (error) => {
     let message = "Something went wrong ❌";
 
@@ -71,30 +70,25 @@ const HrForm = () => {
     toast.error(message);
   };
 
-  // FINAL SUBMIT FUNCTION
   const onSubmit = async (data) => {
     try {
       setUploading(true);
 
       const logoImg = data.companyLogo[0];
 
-      // 1. Register User in Firebase
       await registerUser(data.email, data.password);
 
-      // 2. Upload Image to IMGBB
       const formData = new FormData();
       formData.append("image", logoImg);
 
       const imgRes = await axios.post(uploadURL, formData);
       const logoURL = imgRes.data.data.url;
 
-      // 3. Update Firebase Profile
       await updateUserProfile({
         displayName: data.name,
         photoURL: logoURL,
       });
 
-      // 4. Prepare HR Data for Backend
       const userInfo = {
         name: data.name,
         companyName: data.companyName,
@@ -108,7 +102,6 @@ const HrForm = () => {
         createdAt: new Date(),
       };
 
-      // 5. Save to Backend
       const res = await axiosSecure.post("/users", userInfo);
 
       if (res.data?.insertedId || res.data?.acknowledged) {
@@ -121,17 +114,16 @@ const HrForm = () => {
     } catch (error) {
       console.error("FULL ERROR:", error);
 
-      // Firebase Error
       if (error?.code) {
         showFirebaseError(error);
       }
-      // Backend Axios Error
+
       else if (error?.response) {
         toast.error(
           error.response?.data?.message || "Backend server error ❌"
         );
       }
-      // Network / CORS Error
+
       else {
         toast.error("Network error or server not responding ❌");
       }
@@ -147,7 +139,7 @@ const HrForm = () => {
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Full Name */}
+
         <div className="form-control">
           <label className="label font-medium">Full Name *</label>
           <div className="relative">
@@ -164,7 +156,6 @@ const HrForm = () => {
           )}
         </div>
 
-        {/* Company Name */}
         <div className="form-control">
           <label className="label font-medium">Company Name *</label>
           <div className="relative">
@@ -185,7 +176,6 @@ const HrForm = () => {
           )}
         </div>
 
-        {/* Company Logo */}
         <div className="form-control">
           <label className="label font-medium">Company Logo *</label>
           <div className="relative">
@@ -206,7 +196,6 @@ const HrForm = () => {
           )}
         </div>
 
-        {/* Email */}
         <div className="form-control">
           <label className="label font-medium">Official Email *</label>
           <div className="relative">
@@ -225,7 +214,6 @@ const HrForm = () => {
           )}
         </div>
 
-        {/* Password */}
         <div className="form-control">
           <label className="label font-medium">Password *</label>
           <div className="relative">
@@ -257,7 +245,6 @@ const HrForm = () => {
           )}
         </div>
 
-        {/* Date of Birth */}
         <div className="form-control">
           <label className="label font-medium">Date of Birth *</label>
           <div className="relative">

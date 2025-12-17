@@ -50,7 +50,7 @@ const HrHome = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
+      
       <div>
         <h1 className="text-3xl font-bold">HR Dashboard</h1>
         <p className="text-gray-500 mt-2">
@@ -59,7 +59,6 @@ const HrHome = () => {
         </p>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <HighImpactCard
           title="Total Assets"
@@ -95,9 +94,8 @@ const HrHome = () => {
         />
       </div>
 
-      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Pie Chart */}
+        
         <div className="card bg-base-100 shadow-xl border border-base-200">
           <div className="card-body">
             <h2 className="card-title text-xl mb-6">Asset Distribution</h2>
@@ -134,7 +132,6 @@ const HrHome = () => {
           </div>
         </div>
 
-        {/* Bar Chart */}
         <div className="card bg-base-100 shadow-xl border border-base-200">
           <div className="card-body">
             <h2 className="card-title text-xl mb-6">Top Requested Assets</h2>
@@ -169,7 +166,6 @@ const HrHome = () => {
         </div>
       </div>
 
-      {/* Recent Activity Section */}
       <div className="card bg-base-100 shadow-xl border border-base-200">
         <div className="card-body">
           <div className="flex justify-between items-center mb-4">
@@ -178,7 +174,7 @@ const HrHome = () => {
           </div>
           
           <>
-            {/* Desktop Table View */}
+            
             <div className="hidden lg:block overflow-x-auto">
               <table className="table table-zebra w-full">
                 <thead>
@@ -229,7 +225,6 @@ const HrHome = () => {
               </table>
             </div>
 
-            {/* Mobile Card View */}
             <div className="lg:hidden flex flex-col gap-4">
                {recentRequests.length === 0 ? (
                   <p className="text-center py-8 text-gray-500">

@@ -7,7 +7,6 @@ import useAxiosPublic from "../../../hook/useAxiosPublic";
 const Packages = () => {
   const axiosPublic = useAxiosPublic();
 
-  // Fetch Packages Section
   const { data: packages = [] } = useQuery({
     queryKey: ["packages-home"],
     queryFn: async () => {

@@ -25,12 +25,9 @@ const AvailableAssets = () => {
   const assets = data?.assets || [];
   const pagination = data?.pagination || {};
 
-  // Reset page when search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, sortBy]);
-
-
 
   return (
     <div className="p-6 max-w-7xl mx-auto pt-20">
@@ -38,7 +35,6 @@ const AvailableAssets = () => {
         Available Assets
       </h1>
 
-      {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center bg-base-100 p-4 rounded-xl shadow-sm border border-base-200">
         <div className="form-control w-full md:w-1/3">
           <input
@@ -136,7 +132,6 @@ const AvailableAssets = () => {
             ))}
           </div>
 
-          {/* Pagination */}
           <div className="flex justify-center mt-12">
             <div className="join">
               <button

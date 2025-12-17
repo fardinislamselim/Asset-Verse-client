@@ -15,7 +15,6 @@ const AssetList = () => {
   const limit = 10;
   const [deletingId, setDeletingId] = useState(null);
 
-  // Debounced search - resets page when searching
   const debouncedSearch = useMemo(
     () =>
       debounce((value) => {
@@ -29,7 +28,6 @@ const AssetList = () => {
     return () => debouncedSearch.cancel();
   }, [debouncedSearch]);
 
-  // Fetch paginated assets
   const {
     data: response = {},
     isPending,
@@ -41,10 +39,10 @@ const AssetList = () => {
       const res = await axiosSecure.get(
         `/assets?search=${searchInput}&page=${currentPage}&limit=${limit}`
       );
-      return res.data; // { assets, pagination }
+      return res.data;
     },
     enabled: !!user?.email,
-    placeholderData: keepPreviousData, // Smooth loading between pages
+    placeholderData: keepPreviousData,
   });
 
   const { assets = [], pagination = {} } = response;
@@ -71,7 +69,6 @@ const AssetList = () => {
     }
   };
 
-  // Full page loader on first load
   if (isPending && currentPage === 1) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -82,7 +79,7 @@ const AssetList = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
+      
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <h1 className="text-4xl font-bold">My Assets</h1>
         <Link to="/hr/add-asset" className="btn btn-primary btn-lg">
@@ -90,7 +87,6 @@ const AssetList = () => {
         </Link>
       </div>
 
-      {/* Search Bar */}
       <div className="mb-8 relative">
         <label className="input input-bordered flex items-center gap-2 w-full max-w-md">
           <input
@@ -117,9 +113,8 @@ const AssetList = () => {
         )}
       </div>
 
-      {/* Assets List (Responsive: Cards for Mobile/Tablet, Table for Desktop) */}
       <div className="mb-10">
-        {/* Desktop Table View */}
+        
         <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-xl shadow-lg">
           <table className="table table-zebra">
             <thead className="bg-base-200 text-base">
@@ -198,7 +193,6 @@ const AssetList = () => {
           </table>
         </div>
 
-        {/* Mobile/Tablet Card View */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
           {assets.length === 0 ? (
             <div className="col-span-1 md:col-span-2 text-center py-12 text-gray-500 bg-base-100 rounded-xl shadow-lg">
@@ -273,7 +267,6 @@ const AssetList = () => {
         </div>
       </div>
 
-      {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">
           <p className="text-sm text-gray-600">
@@ -319,7 +312,6 @@ const AssetList = () => {
         </div>
       )}
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="stat bg-base-200 rounded-xl shadow">
           <div className="stat-title">Total Assets</div>

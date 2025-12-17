@@ -16,7 +16,7 @@ const useAxiosSecure = () => {
 
   useEffect(() => {
     if (!loading && user?.accessToken) {
-      // Request Interceptor: Add Bearer token
+
       const requestInterceptor = axiosInstance.interceptors.request.use(
         (config) => {
           config.headers.Authorization = `Bearer ${user.accessToken}`;
@@ -25,7 +25,6 @@ const useAxiosSecure = () => {
         (error) => Promise.reject(error)
       );
 
-      // Response Interceptor: Handle unauthorized / forbidden
       const responseInterceptor = axiosInstance.interceptors.response.use(
         (response) => response,
         (error) => {
@@ -41,7 +40,6 @@ const useAxiosSecure = () => {
         }
       );
 
-      // Cleanup on unmount or when dependencies change
       return () => {
         axiosInstance.interceptors.request.eject(requestInterceptor);
         axiosInstance.interceptors.response.eject(responseInterceptor);

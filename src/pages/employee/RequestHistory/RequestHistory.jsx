@@ -47,7 +47,7 @@ const RequestHistory = () => {
         </div>
       ) : (
         <>
-          {/* Desktop Table View */}
+          
           <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-xl shadow-lg">
             <table className="table table-zebra">
               <thead className="bg-base-200 text-base">
@@ -96,7 +96,6 @@ const RequestHistory = () => {
             </table>
           </div>
 
-          {/* Mobile Card View */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
             {requests.map((req) => (
               <div key={req._id} className="card bg-base-100 shadow-xl border border-base-200">
@@ -142,7 +141,6 @@ const RequestHistory = () => {
         </>
       )}
 
-      {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
         <div className="stat bg-base-200 rounded-xl shadow">
           <div className="stat-title">Total Requests</div>

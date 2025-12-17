@@ -33,7 +33,7 @@ const PaymentHistory = () => {
         </div>
       ) : (
         <>
-          {/* Desktop Table */}
+          
           <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-xl shadow-lg">
             <table className="table table-zebra">
               <thead className="bg-base-200 text-base">
@@ -86,7 +86,6 @@ const PaymentHistory = () => {
             </table>
           </div>
 
-          {/* Mobile Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
             {payments.map((payment) => (
               <div key={payment._id} className="card bg-base-100 shadow-xl border border-base-200">

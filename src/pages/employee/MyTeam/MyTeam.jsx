@@ -17,21 +17,17 @@ const MyTeam = () => {
 
   const { companies = [], colleagues = [] } = data;
 
-  // Filter colleagues by selected company
   const filteredColleagues =
     selectedCompany === "all"
       ? colleagues
       : colleagues.filter((c) => c.companyName === selectedCompany);
 
-  // Upcoming birthdays (current month)
   const currentMonth = new Date().getMonth();
   const upcomingBirthdays = colleagues.filter((c) => {
     if (!c.dateOfBirth) return false;
     const birthMonth = new Date(c.dateOfBirth).getMonth();
     return birthMonth === currentMonth;
   });
-
-
 
   if (isPending) {
     return <LoadingSpinner />;
@@ -43,7 +39,6 @@ const MyTeam = () => {
         My Team
       </h1>
 
-      {/* Company Selector */}
       {companies.length > 0 && (
         <div className="flex justify-center mb-12">
           <div className="tabs tabs-boxed bg-base-200 p-1">
@@ -69,7 +64,7 @@ const MyTeam = () => {
       )}
 
       <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* ================= MAIN CONTENT: TEAM LIST ================= */}
+        
         <div className="flex-grow w-full">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
             Colleagues
@@ -117,7 +112,6 @@ const MyTeam = () => {
           )}
         </div>
 
-        {/* ================= SIDEBAR: UPCOMING BIRTHDAYS ================= */}
         {upcomingBirthdays.length > 0 && (
           <div className="w-full lg:w-80 flex-shrink-0">
             <div className="card bg-gradient-to-br from-base-100 to-base-200 border border-base-200 shadow-xl sticky top-24">

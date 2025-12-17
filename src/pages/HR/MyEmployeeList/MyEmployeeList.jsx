@@ -46,7 +46,6 @@ const MyEmployeeList = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [selectedAssetId, setSelectedAssetId] = useState("");
 
-  // Fetch assets for assignment
   const { data: availableAssets = [], refetch: refetchAssets } = useQuery({
     queryKey: ["hr-assets-list"],
     queryFn: async () => {
@@ -101,7 +100,7 @@ const MyEmployeeList = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
+      
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
         <div>
           <h1 className="text-4xl font-bold">My Employee List</h1>
@@ -120,9 +119,8 @@ const MyEmployeeList = () => {
         </div>
       </div>
 
-      {/* Desktop Table / Mobile Cards */}
       <div className="hidden lg:block">
-        {/* Desktop Table */}
+        
         <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg">
           <table className="table table-zebra">
             <thead className="bg-base-200 text-base">
@@ -188,7 +186,6 @@ const MyEmployeeList = () => {
         </div>
       </div>
 
-      {/* Mobile Cards */}
       <div className="block lg:hidden">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {employees.map((emp) => (
@@ -242,7 +239,6 @@ const MyEmployeeList = () => {
         </div>
       </div>
 
-      {/* Empty State (Mobile) */}
       {employees.length === 0 && (
         <div className="text-center py-20">
           <p className="text-xl text-gray-500">
@@ -254,7 +250,6 @@ const MyEmployeeList = () => {
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row justify-center items-center mt-12 gap-4">
           <div className="join">
@@ -295,7 +290,6 @@ const MyEmployeeList = () => {
         </div>
       )}
 
-      {/* Assign Asset Modal */}
       {selectedEmployee && (
         <dialog className="modal modal-open">
           <div className="modal-box">

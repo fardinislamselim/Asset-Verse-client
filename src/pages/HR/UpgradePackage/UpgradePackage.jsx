@@ -10,7 +10,6 @@ const UpgradePackage = () => {
   const searchParams = new URLSearchParams(location.search);
   const [redirectUrl, setRedirectUrl] = useState(null);
 
-  // Packages & Current User Queries
   const {
     data: packages = [],
     isPending: packagesLoading,
@@ -35,7 +34,6 @@ const UpgradePackage = () => {
     },
   });
 
-  // Handle redirect URL
   useEffect(() => {
     if (redirectUrl) {
       window.location.href = redirectUrl;
@@ -54,7 +52,6 @@ const UpgradePackage = () => {
     }
   };
 
-  // Handle return from Stripe
   useEffect(() => {
     const success = searchParams.get("success");
     const sessionId = searchParams.get("session_id");
@@ -68,7 +65,6 @@ const UpgradePackage = () => {
       toast.error("Payment was canceled");
     }
 
-    // Clean URL after handling
     window.history.replaceState({}, "", "/hr/upgrade-package");
   }, [location, searchParams, confirmUpgrade]);
 
@@ -87,7 +83,6 @@ const UpgradePackage = () => {
     }
   };
 
-  // Loading state
   if (packagesLoading || userLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -102,7 +97,7 @@ const UpgradePackage = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
+      
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">Upgrade Your Package</h1>
         <p className="text-xl text-gray-600 mt-6">
@@ -115,7 +110,6 @@ const UpgradePackage = () => {
         </p>
       </div>
 
-      {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {packages.map((pkg) => {
           const isCurrent = pkg.name === currentPackage.name;
@@ -196,7 +190,6 @@ const UpgradePackage = () => {
         })}
       </div>
 
-      {/* Footer */}
       <div className="text-center mt-16">
         <p className="text-gray-500">
           Need more than 20 employees?{" "}

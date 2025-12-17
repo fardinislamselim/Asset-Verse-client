@@ -50,7 +50,7 @@ const EmployeeHome = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
+      
       <div>
         <h1 className="text-3xl font-bold">My Dashboard</h1>
         <p className="text-gray-500 mt-2">
@@ -59,9 +59,6 @@ const EmployeeHome = () => {
         </p>
       </div>
 
-
-
-      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <HighImpactCard
           title="My Assets"
@@ -97,9 +94,8 @@ const EmployeeHome = () => {
         />
       </div>
 
-      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Pie Chart: Returnable vs Non-Returnable */}
+        
         <div className="card bg-base-100 shadow-xl border border-base-200">
           <div className="card-body">
             <h2 className="card-title text-xl mb-4">Asset Distribution</h2>
@@ -136,7 +132,6 @@ const EmployeeHome = () => {
           </div>
         </div>
 
-        {/* Bar Chart: Request Status */}
         <div className="card bg-base-100 shadow-xl border border-base-200">
           <div className="card-body">
             <h2 className="card-title text-xl mb-4">Request Status Overview</h2>
@@ -182,7 +177,6 @@ const EmployeeHome = () => {
         </div>
       </div>
 
-      {/* Recent Assets Section */}
       <div className="card bg-base-100 shadow-xl border border-base-200">
         <div className="card-body">
           <h2 className="card-title text-xl mb-4">Recently Assigned Assets</h2>

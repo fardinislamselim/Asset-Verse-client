@@ -1,4 +1,4 @@
-// src/pages/hr/EditAsset.jsx
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
@@ -22,7 +22,6 @@ const EditAsset = () => {
     productQuantity: 1,
   });
 
-  // Fetch current asset data
   useEffect(() => {
     const fetchAsset = async () => {
       try {
@@ -49,7 +48,6 @@ const EditAsset = () => {
     if (user?.email) fetchAsset();
   }, [id, axiosSecure, navigate, user?.email]);
 
-  // Handle image upload to ImgBB
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -80,7 +78,6 @@ const EditAsset = () => {
     }
   };
 
-  // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.productImage) {
@@ -121,7 +118,7 @@ const EditAsset = () => {
         onSubmit={handleSubmit}
         className="space-y-8 bg-base-200 p-8 rounded-xl shadow-lg"
       >
-        {/* Product Name */}
+        
         <div className="form-control">
           <label className="label">
             <span className="label-text font-semibold">Product Name</span>
@@ -137,7 +134,6 @@ const EditAsset = () => {
           />
         </div>
 
-        {/* Product Image */}
         <div className="form-control">
           <label className="label">
             <span className="label-text font-semibold">Product Image</span>
@@ -164,7 +160,6 @@ const EditAsset = () => {
           </div>
         </div>
 
-        {/* Type & Quantity */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="form-control">
             <label className="label">
@@ -202,7 +197,6 @@ const EditAsset = () => {
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">
           <button
             type="button"

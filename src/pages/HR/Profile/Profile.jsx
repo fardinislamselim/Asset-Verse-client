@@ -15,7 +15,6 @@ const HRProfile = () => {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Fetch HR data from backend
   const {
     data: hr = {},
     isPending: hrLoading,
@@ -30,7 +29,6 @@ const HRProfile = () => {
     enabled: !!authUser?.email,
   });
 
-  // Sync state when data loads
   useEffect(() => {
     if (hr) {
       setName(hr.name || authUser?.displayName || "");
@@ -85,7 +83,6 @@ const HRProfile = () => {
         photoURL: companyLogo,
       });
 
-      // Update backend
       await axiosSecure.patch("/user/profile", {
         name: name.trim(),
         dateOfBirth,
@@ -115,7 +112,7 @@ const HRProfile = () => {
       <h1 className="text-4xl font-bold text-center mb-12">HR Profile</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* LEFT: Company Info & Logo */}
+        
         <div className="bg-base-100 shadow-xl rounded-2xl p-8 text-center">
           <div className="relative w-48 mx-auto mb-6">
             <img
@@ -147,7 +144,6 @@ const HRProfile = () => {
           </h2>
           <p className="text-gray-600 mt-2">{hr.email}</p>
 
-          {/* Subscription Card */}
           <div className="mt-10 bg-base-200 rounded-2xl p-6 shadow-inner">
             <h3 className="text-xl font-semibold mb-4">Subscription Details</h3>
             <div className="space-y-4 text-left">
@@ -173,14 +169,13 @@ const HRProfile = () => {
           </div>
         </div>
 
-        {/* RIGHT: Personal Info Form */}
         <div className="lg:col-span-2">
           <div className="card bg-base-100 shadow-xl rounded-2xl">
             <div className="card-body">
               <h2 className="card-title text-3xl mb-8">Personal Information</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Email (Read-only) */}
+                
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text font-semibold text-lg">
@@ -196,7 +191,6 @@ const HRProfile = () => {
                   />
                 </div>
 
-                {/* Company Name (Read-only) */}
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text font-semibold text-lg">
@@ -212,7 +206,6 @@ const HRProfile = () => {
                   />
                 </div>
 
-                {/* Full Name */}
                 <div className="form-control md:col-span-2">
                   <label className="label">
                     <span className="label-text font-semibold text-lg">
@@ -228,7 +221,6 @@ const HRProfile = () => {
                   />
                 </div>
 
-                {/* Date of Birth */}
                 <div className="form-control md:col-span-2">
                   <label className="label">
                     <span className="label-text font-semibold text-lg">
@@ -244,7 +236,6 @@ const HRProfile = () => {
                 </div>
               </div>
 
-              {/* Save Button */}
               <div className="card-actions mt-10">
                 <button
                   onClick={handleSave}

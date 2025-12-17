@@ -29,7 +29,7 @@ const Home = () => {
     <div className="bg-base-100 text-base-content font-sans">
       <Hero />
       <About />
-      {/* Hide Packages section for employees */}
+      
       {role !== "employee" && <Packages />}
       <Features />
       <Testimonials />
