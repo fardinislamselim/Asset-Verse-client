@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import useAuth from "../../../hook/useAuth";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const MyEmployeeList = () => {
   const axiosSecure = useAxiosSecure();
@@ -66,28 +67,37 @@ const MyEmployeeList = () => {
       toast.success("Asset assigned successfully");
       setSelectedEmployee(null);
       setSelectedAssetId("");
-      refetch(); 
-      refetchAssets(); 
+      refetch();
+      refetchAssets();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to assign asset");
     }
   };
 
   const handleRemove = async (email) => {
-    if (
-      !window.confirm(
-        "Remove this employee from your team? All assigned assets will be returned."
-      )
-    )
-      return;
-
-    try {
-      await axiosSecure.delete(`/employee-affiliations/${email}`);
-      toast.success("Employee removed from team");
-      refetch();
-    } catch (err) {
-      toast.error("Failed to remove employee");
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove this employee!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axiosSecure.delete(`/employee-affiliations/${email}`);
+          Swal.fire({
+            title: "Removed!",
+            text: "Your employee has been removed.",
+            icon: "success",
+          });
+          refetch();
+        } catch (err) {
+          toast.error("Failed to remove employee", err);
+        }
+      }
+    });
   };
 
   if (isPending && currentPage === 1) {
@@ -100,7 +110,6 @@ const MyEmployeeList = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
         <div>
           <h1 className="text-4xl font-bold">My Employee List</h1>
@@ -120,7 +129,6 @@ const MyEmployeeList = () => {
       </div>
 
       <div className="hidden lg:block">
-        
         <div className="overflow-x-auto bg-base-100 rounded-xl shadow-lg">
           <table className="table table-zebra">
             <thead className="bg-base-200 text-base">
@@ -145,17 +153,7 @@ const MyEmployeeList = () => {
                   <tr key={emp.employeeEmail} className="hover">
                     <td>{(currentPage - 1) * limit + index + 1}</td>
                     <td>
-                      <div className="flex items-center gap-3">
-                        <div className="avatar">
-                          <div className="w-12 rounded-full ring ring-primary ring-offset-2">
-                            <img
-                              src={emp.companyLogo || "/default-avatar.jpg"}
-                              alt={emp.employeeName}
-                            />
-                          </div>
-                        </div>
-                        <div className="font-bold">{emp.employeeName}</div>
-                      </div>
+                      <div className="font-bold">{emp.employeeName}</div>
                     </td>
                     <td>{emp.employeeEmail}</td>
                     <td>

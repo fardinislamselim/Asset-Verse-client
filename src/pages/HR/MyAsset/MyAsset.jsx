@@ -1,16 +1,18 @@
-import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import debounce from "lodash.debounce";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 import { Link } from "react-router";
+import Swal from "sweetalert2";
 import useAuth from "../../../hook/useAuth";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import debounce from "lodash.debounce";
 
 const AssetList = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   const [searchInput, setSearchInput] = useState("");
+  const [sortBy, setSortBy] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
   const [deletingId, setDeletingId] = useState(null);
@@ -32,16 +34,20 @@ const AssetList = () => {
     return () => debouncedSearch.cancel();
   }, [debouncedSearch]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [sortBy]);
+
   const {
     data: response = {},
     isPending,
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: ["hr-assets", user?.email, searchInput, currentPage],
+    queryKey: ["hr-assets", user?.email, searchInput, sortBy, currentPage],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/assets?search=${searchInput}&page=${currentPage}&limit=${limit}`
+        `/assets?search=${searchInput}&sort=${sortBy}&page=${currentPage}&limit=${limit}`
       );
       return res.data;
     },
@@ -95,7 +101,7 @@ const AssetList = () => {
       });
       setFormData((prev) => ({
         ...prev,
-        productImage: res.data.url, // Assuming the response has the URL
+        productImage: res.data.url,
       }));
       toast.success("Image uploaded successfully");
     } catch (err) {
@@ -117,27 +123,33 @@ const AssetList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this asset?")) return;
-
-    setDeletingId(id);
-    try {
-      await axiosSecure.delete(`/assets/${id}`);
-      toast.success("Asset deleted successfully");
-      refetch();
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to delete asset");
-    } finally {
-      setDeletingId(null);
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setDeletingId(id);
+        try {
+          await axiosSecure.delete(`/assets/${id}`);
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your asset has been deleted.",
+            icon: "success",
+          });
+          refetch();
+        } catch (err) {
+          toast.error(err?.response?.data?.message || "Failed to delete asset");
+        } finally {
+          setDeletingId(null);
+        }
+      }
+    });
   };
-
-  if (isPending && currentPage === 1) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -150,30 +162,46 @@ const AssetList = () => {
       </div>
 
       {/* Search */}
-      <div className="mb-8 relative">
-        <label className="input input-bordered flex items-center gap-2 w-full max-w-md">
-          <input
-            type="text"
-            className="grow"
-            placeholder="Search assets by name..."
-            onChange={(e) => debouncedSearch(e.target.value)}
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="w-5 h-5 opacity-70"
-          >
-            <path
-              fillRule="evenodd"
-              d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-              clipRule="evenodd"
+      <div className="mb-8">
+        <div className="flex flex-col md:flex-row gap-4">
+          <label className="input input-bordered flex items-center gap-2 w-full max-w-md relative">
+            <input
+              type="text"
+              className="grow"
+              placeholder="Search assets by name..."
+              onChange={(e) => debouncedSearch(e.target.value)}
             />
-          </svg>
-        </label>
-        {isFetching && (
-          <span className="absolute right-14 top-1/2 -translate-y-1/2 loading loading-spinner loading-sm"></span>
-        )}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="w-5 h-5 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            {isFetching && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 loading loading-spinner loading-sm"></span>
+            )}
+          </label>
+          <div className="form-control w-full md:w-auto min-w-[200px]">
+            <select
+              className="select select-bordered w-full"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="">Sort by Date (Newest)</option>
+              <option value="date-asc">Date (Oldest)</option>
+              <option value="quantity-asc">Quantity (Low to High)</option>
+              <option value="quantity-desc">Quantity (High to Low)</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Desktop Table */}

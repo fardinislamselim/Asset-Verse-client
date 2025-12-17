@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
 import axios from "axios";
-import useAuth from "./useAuth";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
+import useAuth from "./useAuth";
 
 const axiosInstance = axios.create({
   baseURL: "https://assets-vers.vercel.app",
