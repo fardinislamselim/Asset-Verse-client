@@ -26,6 +26,27 @@ const LoginForm = () => {
   const focusStyle =
     "focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary";
 
+  const showFirebaseError = (error) => {
+    let message = "Login failed ❌";
+
+    if (error?.code) {
+      const errorMap = {
+        "auth/user-not-found": "No account found with this email 📧",
+        "auth/wrong-password": "Incorrect password 🔒",
+        "auth/invalid-email": "Invalid email address ❌",
+        "auth/user-disabled": "This account has been disabled 🚫",
+        "auth/too-many-requests": "Too many failed attempts, try again later ⏳",
+        "auth/network-request-failed": "Network error, check your internet 🌐",
+      };
+
+      message = errorMap[error.code] || error.message || message;
+    } else {
+      message = error.message || message;
+    }
+
+    toast.error(message);
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     try {
@@ -51,7 +72,7 @@ const LoginForm = () => {
       navigate(redirectPath, { replace: true });
       setLoading(false);
     } catch (err) {
-      toast.error(err.message || "Login failed ❌");
+      showFirebaseError(err);
       setLoading(false);
     }
   };
