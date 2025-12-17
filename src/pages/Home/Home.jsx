@@ -30,7 +30,7 @@ const Home = () => {
       <Hero />
       <About />
       {/* Hide Packages section for employees */}
-      {role === "employee" && <Packages />}
+      {role !== "employee" && <Packages />}
       <Features />
       <Testimonials />
       <HowItWorks />
