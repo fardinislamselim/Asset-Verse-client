@@ -6,7 +6,7 @@ import useAuth from "../../../hook/useAuth";
 import { toast } from "react-hot-toast";
 
 const EditAsset = () => {
-  const { id } = useParams(); // asset _id from URL
+  const { id } = useParams();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();

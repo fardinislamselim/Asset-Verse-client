@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import useAxiosSecure from "../../../hook/useAxiosSecure";
+import { FaCheckCircle, FaExclamationTriangle, FaUserPlus } from "react-icons/fa";
+import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../hook/useAxiosSecure";
 
 const AllRequests = () => {
   const axiosSecure = useAxiosSecure();
@@ -37,49 +38,33 @@ const AllRequests = () => {
   ]);
 
 const handleApprove = async (id) => {
-  if (currentHr.currentEmployees >= currentHr.packageLimit) {
-    Swal.fire({
-      title: "Employee Limit Reached",
-      text: "Your current package does not allow adding more employees. Please upgrade your package.",
-      icon: "warning",
-      confirmButtonText: "Upgrade Package",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate("/hr/upgrade-package");
-      }
-    });
-  } else {
-    Swal.fire({
-      title: "Approve Asset Request?",
-      text: "This employee will be assigned the requested asset.",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#16a34a",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Approve",
-      cancelButtonText: "Cancel",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axiosSecure.patch(`/requests/${id}/approve`);
+  try {
+    const response = await axiosSecure.patch(`/requests/${id}/approve`);
+    // Success handling...
+    refetch();
+  } catch (err) {
+    const errorMessage = err.response?.data?.message || "Failed to approve";
+    const action = err.response?.data?.action;
 
-          Swal.fire({
-            title: "Approved!",
-            text: "The asset request has been approved successfully.",
-            icon: "success",
-            timer: 2000,
-            showConfirmButton: false,
-          });
-
-          refetch();
-        } catch (err) {
-          toast.error("Failed to approve the request");
+    if (action === "upgrade_required") {
+      // Prompt upgrade and navigate
+      Swal.fire({
+        title: "Employee Limit Reached",
+        text: errorMessage,
+        icon: "warning",
+        confirmButtonText: "Upgrade Package",
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/hr/upgrade-package"); // Redirect to your payment/upgrade page
         }
-      }
-    });
+      });
+    } else {
+      // General error
+      toast.error(errorMessage);
+    }
   }
 };
-
 
   const handleReject = async (id) => {
     Swal.fire({
@@ -122,7 +107,34 @@ const handleApprove = async (id) => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8">All Asset Requests</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+        <h1 className="text-4xl font-bold">All Asset Requests</h1>
+        <div className="stats shadow bg-base-200">
+          <div className="stat">
+            <div className="stat-title text-black font-semibold">Team Capacity</div>
+            <div className={`stat-value transition-colors duration-500 ${currentHr.currentEmployees >= currentHr.packageLimit ? 'text-error' : 'text-primary'}`}>
+              {currentHr.currentEmployees || 0} / {currentHr.packageLimit || 5}
+            </div>
+            <div className="stat-desc font-medium">Used Slots</div>
+          </div>
+        </div>
+      </div>
+
+      {currentHr.currentEmployees >= currentHr.packageLimit && requests.some(r => !r.isAffiliated) && (
+        <div className="alert alert-warning shadow-lg mb-8 border-2 animate-pulse">
+          <FaExclamationTriangle className="text-2xl" />
+          <div>
+            <h3 className="font-bold">New Employee Requests Found!</h3>
+            <div className="text-xs">You have reached your team limit. Approving requests from non-team members will require a package upgrade.</div>
+          </div>
+          <button 
+            onClick={() => navigate("/hr/upgrade-package")}
+            className="btn btn-sm btn-primary"
+          >
+            Upgrade Now
+          </button>
+        </div>
+      )}
 
       {requests.length === 0 ? (
         <div className="text-center py-20 text-xl text-gray-500">
@@ -149,7 +161,18 @@ const handleApprove = async (id) => {
                     <td>{index + 1}</td>
                     <td>
                       <div>
-                        <div className="font-bold">{req.requesterName}</div>
+                        <div className="font-bold flex items-center gap-2">
+                          {req.requesterName}
+                          {req.isAffiliated ? (
+                            <span className="badge badge-success badge-xs gap-1 py-2 px-2 text-[10px] font-bold">
+                              <FaCheckCircle className="text-[10px]" /> TEAM
+                            </span>
+                          ) : (
+                            <span className="badge badge-warning badge-xs gap-1 py-2 px-2 text-[10px] font-bold">
+                              <FaUserPlus className="text-[10px]" /> NEW
+                            </span>
+                          )}
+                        </div>
                         <div className="text-sm opacity-70">
                           {req.requesterEmail}
                         </div>
@@ -172,7 +195,9 @@ const handleApprove = async (id) => {
                     <td className="space-x-2">
                       <button
                         onClick={() => handleApprove(req._id)}
-                        className="btn btn-sm btn-success"
+                        disabled={!req.isAffiliated && (currentHr.currentEmployees || 0) >= (currentHr.packageLimit || 5)}
+                        className={`btn btn-sm ${!req.isAffiliated && (currentHr.currentEmployees || 0) >= (currentHr.packageLimit || 5) ? 'btn-disabled opacity-50' : 'btn-success'}`}
+                        title={!req.isAffiliated && (currentHr.currentEmployees || 0) >= (currentHr.packageLimit || 5) ? "Upgrade package to add new employees" : ""}
                       >
                         Approve
                       </button>
@@ -203,15 +228,26 @@ const handleApprove = async (id) => {
                         {req.requesterEmail}
                       </p>
                     </div>
-                    <span
-                      className={`badge ${
-                        req.assetType === "Returnable"
-                          ? "badge-success"
-                          : "badge-error"
-                      } badge-sm`}
-                    >
-                      {req.assetType}
-                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      <span
+                        className={`badge ${
+                          req.assetType === "Returnable"
+                            ? "badge-success"
+                            : "badge-error"
+                        } badge-sm`}
+                      >
+                        {req.assetType}
+                      </span>
+                      {req.isAffiliated ? (
+                        <span className="badge badge-success badge-sm border-none bg-success/20 text-success font-bold">
+                          TEAM
+                        </span>
+                      ) : (
+                        <span className="badge badge-warning badge-sm border-none bg-warning/20 text-warning font-bold">
+                          NEW
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   <div className="text-sm space-y-2 mb-4">
@@ -231,7 +267,9 @@ const handleApprove = async (id) => {
                   <div className="card-actions justify-end grid grid-cols-2 gap-3">
                     <button
                       onClick={() => handleApprove(req._id)}
-                      className="btn btn-success btn-sm w-full"
+                      disabled={!req.isAffiliated && (currentHr.currentEmployees || 0) >= (currentHr.packageLimit || 5)}
+                      className={`btn btn-sm w-full ${!req.isAffiliated && (currentHr.currentEmployees || 0) >= (currentHr.packageLimit || 5) ? 'btn-disabled opacity-50 text-gray-400' : 'btn-success'}`}
+                      title={!req.isAffiliated && (currentHr.currentEmployees || 0) >= (currentHr.packageLimit || 5) ? "Upgrade package to add new employees" : ""}
                     >
                       Approve
                     </button>

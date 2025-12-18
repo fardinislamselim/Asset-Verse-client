@@ -15,6 +15,7 @@ import AssetDetailsPublic from "../pages/Home/AssetDetailsPublic";
 import AvailableAssets from "../pages/Home/AvailableAssets";
 import Home from "../pages/Home/Home";
 import AddAsset from "../pages/HR/AddAsset/AddAsset";
+import AddEmployee from "../pages/HR/AddEmployee/AddEmployee";
 import AllRequests from "../pages/HR/AllRequests/AllRequests";
 import EditAsset from "../pages/HR/EditAsset/EditAsset";
 import HrHome from "../pages/HR/HrHome/HrHome";
@@ -66,6 +67,10 @@ export const router = createBrowserRouter([
       {
         path: "add-asset",
         element: <AddAsset />,
+      },
+      {
+        path: "add-employee",
+        element: <AddEmployee />,
       },
       {
         path: "edit-asset/:id",

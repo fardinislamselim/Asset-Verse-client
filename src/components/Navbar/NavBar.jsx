@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import {
-  RiAddCircleLine,
-  RiDashboardLine,
-  RiFileList3Line,
-  RiHistoryLine,
-  RiLogoutBoxLine,
-  RiTeamLine,
-  RiUser3Line,
-  RiVipCrownLine,
+    RiAddCircleLine,
+    RiDashboardLine,
+    RiFileList3Line,
+    RiHistoryLine,
+    RiLogoutBoxLine,
+    RiTeamLine,
+    RiUser3Line,
+    RiVipCrownLine,
 } from "react-icons/ri";
 import { Link, NavLink, useNavigate } from "react-router";
 import logo from "../../assets/logo.png";
@@ -131,6 +131,7 @@ const Navbar = () => {
     { to: "/hr/add-asset", text: "Add Asset", icon: RiAddCircleLine },
     { to: "/hr/requests", text: "All Requests", icon: RiHistoryLine },
     { to: "/hr/employees", text: "Employee List", icon: RiTeamLine },
+    { to: "/hr/add-employee", text: "Add Employee", icon: RiAddCircleLine },
     {
       to: "/hr/upgrade-package",
       text: "Upgrade Package",

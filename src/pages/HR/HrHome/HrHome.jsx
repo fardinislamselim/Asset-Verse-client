@@ -3,7 +3,8 @@ import {
     FaBoxOpen,
     FaCheckCircle,
     FaClock,
-    FaUsers,
+    FaExclamationTriangle,
+    FaUsers
 } from "react-icons/fa";
 import {
     Bar,
@@ -58,6 +59,22 @@ const HrHome = () => {
           overview.
         </p>
       </div>
+
+      {(summary.currentEmployees || summary.totalEmployees) >= (summary.packageLimit || 5) && recentRequests.some(r => r.requestStatus === "pending" && !r.isAffiliated) && (
+        <div className="alert alert-warning shadow-lg border-2 animate-pulse">
+          <FaExclamationTriangle className="text-2xl" />
+          <div>
+            <h3 className="font-bold">Team Limit Warning!</h3>
+            <div className="text-xs">You are at your employee limit. Approving requests from new employees will require an upgrade.</div>
+          </div>
+          <button 
+            onClick={() => window.location.href = "/hr/upgrade-package"}
+            className="btn btn-sm btn-primary"
+          >
+            Upgrade Now
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <HighImpactCard
@@ -198,7 +215,18 @@ const HrHome = () => {
                       <tr key={req._id}>
                         <td>
                           <div>
-                            <div className="font-bold">{req.requesterName}</div>
+                            <div className="font-bold flex items-center gap-2">
+                              {req.requesterName}
+                              {req.isAffiliated ? (
+                                <span className="badge badge-success badge-xs gap-1 py-1 px-2 text-[8px] font-bold">
+                                  TEAM
+                                </span>
+                              ) : (
+                                <span className="badge badge-warning badge-xs gap-1 py-1 px-2 text-[8px] font-bold">
+                                  NEW
+                                </span>
+                              )}
+                            </div>
                             <div className="text-xs opacity-50">{req.requesterEmail}</div>
                           </div>
                         </td>
@@ -238,17 +266,28 @@ const HrHome = () => {
                              <h4 className="font-bold">{req.assetName}</h4>
                              <p className="text-xs text-gray-500">{req.assetType}</p>
                           </div>
-                          <span
-                            className={`badge ${
-                              req.requestStatus === "pending"
-                                ? "badge-warning"
-                                : req.requestStatus === "approved"
-                                ? "badge-success text-white"
-                                : "badge-error text-white"
-                            } badge-sm`}
-                          >
-                            {req.requestStatus}
-                          </span>
+                          <div className="flex flex-wrap gap-2">
+                            <span
+                              className={`badge ${
+                                req.requestStatus === "pending"
+                                  ? "badge-warning"
+                                  : req.requestStatus === "approved"
+                                  ? "badge-success text-white"
+                                  : "badge-error text-white"
+                              } badge-sm`}
+                            >
+                              {req.requestStatus}
+                            </span>
+                            {req.isAffiliated ? (
+                              <span className="badge badge-success badge-sm border-none bg-success/20 text-success font-bold">
+                                TEAM
+                              </span>
+                            ) : (
+                              <span className="badge badge-warning badge-sm border-none bg-warning/20 text-warning font-bold">
+                                NEW
+                              </span>
+                            )}
+                          </div>
                        </div>
                        
                        <div className="flex items-center gap-3">

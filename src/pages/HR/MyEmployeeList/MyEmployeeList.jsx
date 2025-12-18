@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { FaUserPlus } from "react-icons/fa";
+import { Link } from "react-router";
+import Swal from "sweetalert2";
 import useAuth from "../../../hook/useAuth";
 import useAxiosSecure from "../../../hook/useAxiosSecure";
-import Swal from "sweetalert2";
 
 const MyEmployeeList = () => {
   const axiosSecure = useAxiosSecure();
@@ -118,7 +120,10 @@ const MyEmployeeList = () => {
             {currentHr.packageLimit || 5} employees used
           </p>
         </div>
-        <div className="text-center md:text-right">
+        <div className="text-center md:text-right flex flex-col items-center md:items-end gap-4">
+          <Link to="/hr/add-employee" className="btn btn-primary btn-md gap-2 w-full md:w-auto">
+            <FaUserPlus /> Add New Employee
+          </Link>
           <div className="stat bg-base-200 rounded-xl p-6 shadow-lg inline-block">
             <div className="stat-title text-lg">Current Package</div>
             <div className="stat-value text-3xl text-primary">
