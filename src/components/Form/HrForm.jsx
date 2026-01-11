@@ -133,7 +133,7 @@ const HrForm = () => {
   };
 
   return (
-    <div className="p-6 bg-base-200 rounded-2xl shadow-xl border border-base-300">
+    <div className="p-6 bg-base-200 rounded-box shadow-xl border border-base-300">
       <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
         <FaBuilding className="text-primary" /> HR Registration
       </h2>
@@ -267,7 +267,7 @@ const HrForm = () => {
         <button
           type="submit"
           disabled={uploading}
-          className="btn btn-primary w-full mt-4"
+          className="btn btn-primary w-full mt-4 rounded-field"
         >
           {uploading ? "Registering..." : "Register as HR"}
         </button>

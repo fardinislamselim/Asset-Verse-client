@@ -27,7 +27,7 @@
   --color-neutral: #334155;
   --color-neutral-content: #ffffff;
 
-  --color-info: #2563eb;
+  --color-info: #3b82f6;
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
@@ -35,10 +35,10 @@
   /* Typography */
   --color-body-text: #334155;
 
-  /* Radius */
-  --radius-selector: 1rem;
-  --radius-field: 0.25rem;
-  --radius-box: 0.5rem;
+  /* Radius - Standardizing to a more modern rounded look (1.5rem = 24px = 3xl) */
+  --radius-selector: 1.5rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1.5rem; /* Matches user preference for rounded-3xl */
 
   /* Effects */
   --border: 1px;
@@ -81,13 +81,12 @@
   --color-body-text: #cbd5e1;
 
   /* Radius */
-  --radius-selector: 1rem;
-  --radius-field: 0.25rem;
-  --radius-box: 0.5rem;
+  --radius-selector: 1.5rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1.5rem;
 
   /* Effects */
   --border: 1px;
   --depth: 1;
   --noise: 0;
 }
-

@@ -76,7 +76,7 @@ const MyTeam = () => {
           </h2>
 
           {filteredColleagues.length === 0 ? (
-            <div className="text-center py-16 bg-base-100 rounded-2xl border border-dashed border-base-300">
+            <div className="text-center py-16 bg-base-100 rounded-box border border-dashed border-base-300">
               <p className="text-xl text-gray-500">
                 {companies.length === 0
                   ? "You are not affiliated with any company yet."
@@ -134,10 +134,10 @@ const MyTeam = () => {
                      return (
                     <div
                       key={emp.employeeEmail}
-                      className="flex items-center gap-4 p-3 rounded-xl bg-base-100 border border-base-200/50 hover:bg-base-200/50 transition-colors"
+                      className="flex items-center gap-4 p-3 rounded-box bg-base-100 border border-base-200/50 hover:bg-base-200/50 transition-colors"
                     >
                       <div className="avatar">
-                        <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
+                        <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                           <img 
                             src={emp.photoURL || emp.companyLogo} 
                             alt={emp.employeeName} 

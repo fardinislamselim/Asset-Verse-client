@@ -35,7 +35,7 @@ const Packages = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className={`relative p-8 rounded-3xl bg-base-100 shadow-xl border-2 flex flex-col ${
+                className={`relative p-8 rounded-box bg-base-100 shadow-xl border-2 flex flex-col ${
                   idx === 1
                     ? "border-primary md:scale-105 z-10"
                     : "border-transparent"
@@ -74,7 +74,7 @@ const Packages = () => {
                 </ul>
                 <Link
                   to="/hr/upgrade-package"
-                  className={`btn w-full rounded-xl ${
+                  className={`btn w-full rounded-field ${
                     idx === 1 ? "btn-primary" : "btn-outline"
                   }`}
                 >

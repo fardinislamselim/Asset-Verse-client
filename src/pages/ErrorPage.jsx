@@ -15,7 +15,7 @@ const ErrorPage = () => {
           {error?.statusText || error?.message || "Something went wrong."}
         </p>
 
-        <div className="card bg-base-100 shadow-xl border border-base-300">
+        <div className="card bg-base-100 shadow-xl border border-base-300 rounded-box">
           <div className="card-body p-4 text-left">
              <code className="text-xs text-error break-words">
                {error?.stack || "No stack trace available"}
@@ -23,7 +23,7 @@ const ErrorPage = () => {
           </div>
         </div>
 
-        <Link to="/" className="btn btn-primary btn-wide rounded-full shadow-lg">
+        <Link to="/" className="btn btn-primary btn-wide rounded-field shadow-lg">
           Back to Home
         </Link>
       </div>

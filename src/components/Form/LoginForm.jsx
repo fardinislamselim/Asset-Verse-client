@@ -79,7 +79,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="p-6 bg-base-200 rounded-2xl shadow-xl border border-base-300 max-w-md mx-auto mt-10">
+    <div className="p-6 bg-base-200 rounded-box shadow-xl border border-base-300 max-w-md mx-auto mt-10">
       <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
         <FaUser className="text-primary" /> Login
       </h2>
@@ -140,7 +140,7 @@ const LoginForm = () => {
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary w-full mt-4"
+          className="btn btn-primary w-full mt-4 rounded-field"
         >
           {loading ? (
             <>

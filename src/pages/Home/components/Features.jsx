@@ -55,7 +55,7 @@ const Features = () => {
           ].map((feature, i) => (
             <div
               key={i}
-              className="flex gap-4 p-6 rounded-xl hover:bg-base-200 transition-colors"
+              className="flex gap-4 p-6 rounded-box hover:bg-base-200 transition-colors"
             >
               <div className="text-primary text-2xl mt-1">
                 <feature.icon />

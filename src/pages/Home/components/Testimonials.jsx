@@ -1,4 +1,3 @@
-import react from "react"
 import amazon from "../../../assets/amazon.png"
 import casio from "../../../assets/casio.png"
 import start_people from "../../../assets/start-people.png"
@@ -25,8 +24,8 @@ const Testimonials = () => {
               <div className="avatar">
                 <div className="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <img
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                    alt="CEO"
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
+                    alt="Sarah Jenkins"
                   />
                 </div>
               </div>
@@ -64,7 +63,7 @@ const Testimonials = () => {
                 {logoUrls.map((url, idx) => (
                   <div
                     key={idx}
-                    className="bg-white/10 h-32 rounded-xl flex items-center justify-center"
+                    className="bg-white/10 h-32 rounded-box flex items-center justify-center p-4"
                   >
                     <img src={url} alt={`Logo ${idx + 1}`} className="h-full object-contain" />
                   </div>

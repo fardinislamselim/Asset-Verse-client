@@ -56,10 +56,10 @@ const Forbidden = () => {
           transition={{ delay: 0.6 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Link to="/" className="btn btn-primary btn-lg rounded-full px-8 shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+          <Link to="/" className="btn btn-primary btn-lg rounded-field px-8 shadow-lg hover:shadow-xl hover:scale-105 transition-all">
             Go Home
           </Link>
-          <button onClick={() => window.history.back()} className="btn btn-outline btn-lg rounded-full px-8 hover:bg-base-300">
+          <button onClick={() => window.history.back()} className="btn btn-outline btn-lg rounded-field px-8 hover:bg-base-300">
             Go Back
           </button>
         </motion.div>

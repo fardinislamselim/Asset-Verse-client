@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 const Contact = () => {
   return (
-    <section className="py-24 bg-primary text-primary-content text-center">
+    <section id="contact" className="py-24 bg-primary text-primary-content text-center">
       <div className="container mx-auto px-6">
         <h2 className="text-4xl md:text-5xl font-bold mb-6">
           Ready to Streamline Your Assets?
@@ -16,9 +16,9 @@ const Contact = () => {
           <input
             type="email"
             placeholder="Enter your email"
-            className="input input-lg text-base-content w-full rounded-full"
+            className="input input-lg text-base-content w-full rounded-field"
           />
-          <Link to="/register" className="btn btn-secondary btn-lg rounded-full px-8">
+          <Link to="/register" className="btn btn-secondary btn-lg rounded-field px-8">
             Get Started
           </Link>
         </div>

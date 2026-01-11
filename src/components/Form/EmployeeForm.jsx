@@ -3,13 +3,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import {
-  FaCalendarAlt,
-  FaEnvelope,
-  FaEye,
-  FaEyeSlash,
-  FaImage,
-  FaLock,
-  FaUser,
+    FaCalendarAlt,
+    FaEnvelope,
+    FaEye,
+    FaEyeSlash,
+    FaImage,
+    FaLock,
+    FaUser,
 } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router";
 
@@ -126,7 +126,7 @@ const EmployeeForm = () => {
   };
 
   return (
-    <div className="p-6 bg-base-200 rounded-2xl shadow-xl border border-base-300 max-w-lg mx-auto mt-8">
+    <div className="p-6 bg-base-200 rounded-box shadow-xl border border-base-300 max-w-lg mx-auto mt-8">
       <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
         <FaUser className="text-primary" /> Employee Registration
       </h2>
@@ -246,7 +246,7 @@ const EmployeeForm = () => {
         <button
           type="submit"
           disabled={uploading}
-          className="btn btn-primary w-full mt-4"
+          className="btn btn-primary w-full mt-4 rounded-field"
         >
           {uploading ? (
             <>

@@ -9,7 +9,7 @@ const FAQ = () => {
           </h2>
         </div>
 
-        <div className="join join-vertical w-full bg-base-100 shadow-xl rounded-2xl">
+        <div className="join join-vertical w-full bg-base-100 shadow-xl rounded-box">
           {[
             {
               q: "Is there a free trial?",

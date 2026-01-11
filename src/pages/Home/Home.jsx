@@ -7,7 +7,10 @@ import FAQ from "./components/FAQ";
 import Features from "./components/Features";
 import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
+import Newsletter from "./components/Newsletter";
 import Packages from "./components/Packages";
+import SecuritySection from "./components/SecuritySection";
+import Stats from "./components/Stats";
 import Testimonials from "./components/Testimonials";
 
 const Home = () => {
@@ -29,12 +32,16 @@ const Home = () => {
     <div className="bg-base-100 text-base-content font-sans">
       <Hero />
       <About />
+      <Stats />
       
       {role !== "employee" && <Packages />}
+      <ListingSection />
       <Features />
       <Testimonials />
       <HowItWorks />
+      <SecuritySection />
       <FAQ />
+      <Newsletter />
       <Contact />
     </div>
   );

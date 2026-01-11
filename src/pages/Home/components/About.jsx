@@ -7,7 +7,7 @@ import { RiSecurePaymentLine, RiTeamLine } from "react-icons/ri";
 
 const About = () => {
   return (
-    <section className="py-24 bg-base-100">
+    <section id="about" className="py-24 bg-base-100">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-neutral mb-4">
@@ -47,7 +47,7 @@ const About = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.5 }}
-              className="p-8 rounded-2xl bg-base-100 border border-base-200 hover:shadow-xl hover:border-primary/30 transition-all text-center group"
+              className="p-8 rounded-box bg-base-100 border border-base-200 hover:shadow-xl hover:border-primary/30 transition-all text-center group"
             >
               <div className="w-16 h-16 mx-auto bg-primary/5 rounded-2xl flex items-center justify-center text-primary text-3xl mb-6 group-hover:scale-110 transition-transform">
                 <item.icon />
