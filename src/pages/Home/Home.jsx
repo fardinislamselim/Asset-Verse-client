@@ -35,7 +35,6 @@ const Home = () => {
       <Stats />
       
       {role !== "employee" && <Packages />}
-      <ListingSection />
       <Features />
       <Testimonials />
       <HowItWorks />
