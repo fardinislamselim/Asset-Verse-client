@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router";
 import EmployeeDashboard from "../layout/EmployeeDashboard";
 import HrDashboard from "../layout/HrDashboard";
 import RootLayout from "../layout/RootLayout";
-import AssetDetails from "../pages/employee/AssetDetails/AssetDetails";
 import EmployeeHome from "../pages/employee/EmployeeHome/EmployeeHome";
 import MyAssets from "../pages/employee/MyAssets/MyAssets";
 import MyTeam from "../pages/employee/MyTeam/MyTeam";
@@ -11,9 +10,13 @@ import RequestAsset from "../pages/employee/RequestAsset/RequestAsset";
 import RequestHistory from "../pages/employee/RequestHistory/RequestHistory";
 import ErrorPage from "../pages/ErrorPage";
 import Forbidden from "../pages/Forbidden";
+import About from "../pages/Home/About";
 import AssetDetailsPublic from "../pages/Home/AssetDetailsPublic";
 import AvailableAssets from "../pages/Home/AvailableAssets";
+import Contact from "../pages/Home/Contact";
 import Home from "../pages/Home/Home";
+import Privacy from "../pages/Home/Privacy";
+import Support from "../pages/Home/Support";
 import AddAsset from "../pages/HR/AddAsset/AddAsset";
 import AddEmployee from "../pages/HR/AddEmployee/AddEmployee";
 import AllRequests from "../pages/HR/AllRequests/AllRequests";
@@ -24,6 +27,7 @@ import MyEmployeeList from "../pages/HR/MyEmployeeList/MyEmployeeList";
 import PaymentHistory from "../pages/HR/PaymentHistory/PaymentHistory";
 import HRProfile from "../pages/HR/Profile/Profile";
 import UpgradePackage from "../pages/HR/UpgradePackage/UpgradePackage";
+import ForgotPassword from "../pages/Login/ForgotPassword";
 import Login from "../pages/Login/Login";
 import Register from "../pages/register/Register";
 import PrivateRoute from "./PrivateRoute";
@@ -41,8 +45,13 @@ export const router = createBrowserRouter([
       },
       { path: "register", element: <Register /> },
       { path: "login", element: <Login /> },
+      { path: "forgot-password", element: <ForgotPassword /> },
       { path: "assets", element: <AvailableAssets /> },
       { path: "assets/:id", element: <AssetDetailsPublic /> },
+      { path: "about", element: <About /> },
+      { path: "contact", element: <Contact /> },
+      { path: "support", element: <Support /> },
+      { path: "privacy", element: <Privacy /> },
       { path: "forbidden", element: <Forbidden /> },
     ],
   },
@@ -110,7 +119,7 @@ export const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <EmployeeHome /> },
       { path: "request-asset", element: <RequestAsset /> },
-      { path: "asset-details/:id", element: <AssetDetails /> },
+      { path: "asset-details/:id", element: <AssetDetailsPublic /> },
       { path: "my-asset", element: <MyAssets /> },
       { path: "profile", element: <EmployeeProfile /> },
       { path: "my-team", element: <MyTeam /> },

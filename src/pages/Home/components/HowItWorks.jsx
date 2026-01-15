@@ -27,7 +27,7 @@ const HowItWorks = () => {
             },
           ].map((item, idx) => (
             <div key={idx} className="bg-base-100 p-6">
-              <div className="w-16 h-16 mx-auto bg-primary text-primary-content rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg border-4 border-white">
+              <div className="w-16 h-16 mx-auto bg-primary text-primary-content rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg border-4 border-base-100">
                 {item.step}
               </div>
               <h3 className="text-xl font-bold mb-3">{item.title}</h3>

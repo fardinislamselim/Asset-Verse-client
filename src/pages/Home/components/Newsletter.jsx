@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import { FaPaperPlane } from "react-icons/fa";
 
 const Newsletter = () => {
@@ -28,7 +29,14 @@ const Newsletter = () => {
               operational excellence, asset security, and team productivity.
             </p>
 
-            <form className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
+            <form 
+              className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" 
+              onSubmit={(e) => {
+                e.preventDefault();
+                toast.success("Thanks for subscribing!");
+                e.target.reset();
+              }}
+            >
               <input
                 type="email"
                 placeholder="Enter your work email"

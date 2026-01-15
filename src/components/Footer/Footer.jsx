@@ -1,11 +1,11 @@
 import {
-    FaEnvelope,
-    FaFacebookF,
-    FaGithub,
-    FaLinkedinIn,
-    FaMapMarkerAlt,
-    FaPhone,
-    FaTwitter
+  FaEnvelope,
+  FaFacebookF,
+  FaGithub,
+  FaLinkedinIn,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaTwitter
 } from "react-icons/fa";
 import { Link } from "react-router";
 import logo from "../../assets/logo.png";
@@ -27,10 +27,10 @@ const Footer = () => {
     {
       title: "Company",
       links: [
-        { name: "About AssetVerse", path: "/#about" },
+        { name: "About AssetVerse", path: "/about" },
         { name: "Our Features", path: "/#features" },
-        { name: "Success Stories", path: "/#testimonials" },
-        { name: "Contact Support", path: "/#contact" },
+        { name: "Contact Support", path: "/support" },
+        { name: "Contact Us", path: "/contact" },
       ],
     },
   ];
@@ -144,9 +144,9 @@ const Footer = () => {
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-gray-500 relative z-10">
           <p>© {currentYear} <span className="text-white font-bold">AssetVerse Inc.</span> Crafted for operational excellence.</p>
           <div className="flex gap-6 uppercase tracking-widest text-[10px]">
-            <Link to="/#security" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/#security" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link to="/#faq" className="hover:text-white transition-colors">Cookies</Link>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/privacy" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/support" className="hover:text-white transition-colors">Cookies</Link>
           </div>
         </div>
       </Container>

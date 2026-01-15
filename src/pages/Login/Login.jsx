@@ -38,7 +38,7 @@ const Login = () => {
   }
 
   return (
-    <div className="bg-base-100 min-h-screen">
+    <div className="bg-base-100 min-h-screen pt-24 lg:pt-32">
       <Container className="flex flex-col lg:flex-row justify-between h-full py-12">
 
         <div className="w-full lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">

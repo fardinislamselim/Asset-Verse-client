@@ -1,9 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { FaBoxOpen, FaCheckCircle, FaStar } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router";
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaBox,
+  FaClipboardList,
+  FaComments,
+  FaInfoCircle,
+  FaShieldAlt,
+  FaStar,
+  FaTruck
+} from "react-icons/fa";
+import { Link, useNavigate, useParams } from "react-router";
+import AssetCard from "../../components/AssetCard";
 import useAuth from "../../hook/useAuth";
 import useAxiosPublic from "../../hook/useAxiosPublic";
 import useAxiosSecure from "../../hook/useAxiosSecure";
@@ -12,13 +22,19 @@ const AssetDetailsPublic = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const axiosSecure = useAxiosSecure(); 
+  const axiosSecure = useAxiosSecure();
   const axiosPublic = useAxiosPublic();
-  const [note, setNote] = useState("");
-  const [requestLoading, setRequestLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
+  const queryClient = useQueryClient();
 
-  const { data: asset, isPending, isError } = useQuery({
+  const [note, setNote] = useState("");
+  const [activeTab, setActiveTab] = useState("overview");
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [selectedImage, setSelectedImage] = useState(0);
+
+  // Queries
+  const { data: asset, isPending: assetPending } = useQuery({
     queryKey: ["asset", id],
     queryFn: async () => {
       const res = await axiosPublic.get(`/assets/${id}`);
@@ -27,11 +43,45 @@ const AssetDetailsPublic = () => {
     enabled: !!id,
   });
 
+  const { data: reviews = [], isPending: reviewsPending } = useQuery({
+    queryKey: ["asset-reviews", id],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/assets/${id}/reviews`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+
+  const { data: related = [], isPending: relatedPending } = useQuery({
+    queryKey: ["asset-related", id],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/assets/${id}/related`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
+
+  // Review Mutation
+  const reviewMutation = useMutation({
+    mutationFn: async (newReview) => {
+      return axiosSecure.post(`/assets/${id}/reviews`, newReview);
+    },
+    onSuccess: () => {
+      toast.success("Review posted successfully!");
+      setReviewComment("");
+      setReviewRating(5);
+      queryClient.invalidateQueries(["asset-reviews", id]);
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to post review");
+    }
+  });
+
   const handleRequest = async () => {
     if (!user) {
-        toast.error("You must be logged in to request an asset.");
-        navigate("/login", { state: { from: `/assets/${id}` } });
-        return;
+      toast.error("You must be logged in to request an asset.");
+      navigate("/login", { state: { from: `/assets/${id}` } });
+      return;
     }
 
     if (!note.trim()) {
@@ -54,14 +104,22 @@ const AssetDetailsPublic = () => {
       toast.success("Request sent successfully!");
       navigate("/employee/request-asset");
     } catch (err) {
-      console.error(err);
       toast.error(err.response?.data?.message || "Failed to send request.");
     } finally {
       setRequestLoading(false);
     }
   };
 
-  if (isPending) {
+  const handlePostReview = (e) => {
+    e.preventDefault();
+    if (!user) {
+      toast.error("Please login to post a review");
+      return;
+    }
+    reviewMutation.mutate({ rating: reviewRating, comment: reviewComment });
+  };
+
+  if (assetPending) {
     return (
       <div className="flex justify-center items-center h-screen">
         <span className="loading loading-spinner loading-lg text-primary"></span>
@@ -69,11 +127,11 @@ const AssetDetailsPublic = () => {
     );
   }
 
-  if (isError || !asset) {
+  if (!asset) {
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-4">
         <h2 className="text-2xl font-bold text-error">Asset Not Found</h2>
-        <button className="btn btn-primary rounded-field" onClick={() => navigate("/assets")}>
+        <button className="btn btn-primary" onClick={() => navigate("/assets")}>
           Back to Assets
         </button>
       </div>
@@ -81,229 +139,327 @@ const AssetDetailsPublic = () => {
   }
 
   const isOutOfStock = asset.availableQuantity <= 0;
-
-  // Mock Data
-  const galleryImages = [asset.productImage, asset.productImage, asset.productImage]; 
-  const specs = [
-    { label: "Asset Type", value: asset.productType },
-    { label: "Quantity Available", value: asset.availableQuantity },
-    { label: "Provider", value: asset.companyName },
-    { label: "Date Added", value: new Date(asset.dateAdded).toLocaleDateString() },
-    { label: "Location", value: "New York, USA" },
-    { label: "Condition", value: "New / Excellent" },
-  ];
   
-  const reviews = [
-    { id: 1, name: "Sarah J.", rating: 5, comment: "Excellent quality and fast approval process.", date: "2 days ago" },
-    { id: 2, name: "Mike R.", rating: 4, comment: "Good asset, exactly as described.", date: "1 week ago" },
+  // Media Gallery (Mocked if only one image exists)
+  const images = [
+    asset.productImage,
+    "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1926&auto=format&fit=crop"
+  ];
+
+  const specs = [
+    { label: "Model Year", value: asset.dateAdded?.split('-')[0] || "2024" },
+    { label: "Category", value: asset.productType },
+    { label: "Condition", value: "Premium" },
+    { label: "Provider", value: asset.companyName },
+    { label: "Global Stock", value: asset.availableQuantity > 50 ? "High" : "Controlled" },
+    { label: "Support", value: "24/7 Corporate" }
   ];
 
   return (
-    <div className="bg-base-100 min-h-screen pt-24 pb-12">
+    <div className="bg-base-200/50 min-h-screen pb-20 pt-24">
       <div className="max-w-7xl mx-auto px-6">
         {/* Navigation */}
         <button 
-          onClick={() => navigate("/assets")} 
-          className="btn btn-ghost hover:bg-base-200 gap-2 mb-8 group"
+          onClick={() => navigate(-1)} 
+          className="btn btn-ghost btn-sm mb-8 hover:bg-base-300 gap-2 font-semibold"
         >
-          <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Assets
+          <FaArrowLeft /> Back to Exploration
         </button>
 
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          {/* Left: Image Gallery */}
-          <div className="space-y-4">
-            <figure className="aspect-square bg-base-200 rounded-2xl overflow-hidden shadow-sm border border-base-200 relative">
-              <img
-                src={asset.productImage}
-                alt={asset.productName}
-                className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
-              />
-              {isOutOfStock && (
-                <div className="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
-                  <span className="text-white font-bold text-xl uppercase tracking-widest border-2 border-white/50 px-6 py-2 rounded-full">
-                    Out of Stock
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* Left Column: Media Gallery */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="bg-base-100 p-2 rounded-3xl shadow-xl border border-base-200 overflow-hidden">
+              <figure className="relative aspect-video rounded-2xl overflow-hidden group">
+                <img
+                  src={images[selectedImage]}
+                  alt={asset.productName}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute top-4 left-4">
+                  <span className={`badge lg:badge-lg ${asset.productType === "Returnable" ? "badge-success" : "badge-secondary"} border-none shadow-lg font-bold`}>
+                    {asset.productType}
                   </span>
                 </div>
-              )}
-            </figure>
-            <div className="grid grid-cols-3 gap-4">
-              {galleryImages.map((img, idx) => (
-                <div key={idx} className="aspect-square rounded-xl overflow-hidden border border-base-200 cursor-pointer hover:ring-2 ring-primary transition-all">
-                   <img src={img} alt="Thumbnail w-full h-full object-cover" className="w-full h-full object-cover" />
-                </div>
+              </figure>
+            </div>
+            
+            {/* Gallery Thumbnails */}
+            <div className="flex gap-4 p-2 overflow-x-auto pb-4 pt-2">
+              {images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedImage(idx)}
+                  className={`relative w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all ${
+                    selectedImage === idx ? "border-primary scale-105 shadow-md" : "border-transparent opacity-60 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                </button>
               ))}
+            </div>
+
+            {/* Tabs Section */}
+            <div className="bg-base-100 rounded-3xl shadow-lg border border-base-200 overflow-hidden mt-8">
+              <div className="flex border-b border-base-200">
+                {[
+                  { id: "overview", label: "Overview", icon: <FaInfoCircle /> },
+                  { id: "specs", label: "Specifications", icon: <FaClipboardList /> },
+                  { id: "reviews", label: "Reviews", icon: <FaComments /> }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 flex items-center justify-center gap-2 py-5 font-bold transition-all ${
+                      activeTab === tab.id 
+                      ? "text-primary border-b-4 border-primary bg-primary/5" 
+                      : "text-base-content/60 hover:text-base-content hover:bg-base-200"
+                    }`}
+                  >
+                    {tab.icon} {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-8">
+                {activeTab === "overview" && (
+                  <div className="animate-fadeIn">
+                    <h3 className="text-2xl font-bold mb-4">Description</h3>
+                    <p className="text-lg leading-relaxed text-base-content/70">
+                      The <span className="text-primary font-bold">{asset.productName}</span> is a top-tier corporate asset managed by <span className="font-semibold">{asset.companyName}</span>. 
+                      Designed for high-performance professional environments, this {asset.productType.toLowerCase()} item meets all modern industry standards.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                      <div className="flex items-start gap-4 p-4 bg-base-200 rounded-2xl">
+                        <div className="p-3 bg-success/20 rounded-xl text-success"><FaShieldAlt size={24}/></div>
+                        <div>
+                          <h4 className="font-bold">Security Grade</h4>
+                          <p className="text-sm opacity-70">Fully encrypted and ready for secure workspace integration.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4 p-4 bg-base-200 rounded-2xl">
+                        <div className="p-3 bg-info/20 rounded-xl text-info"><FaTruck size={24}/></div>
+                        <div>
+                          <h4 className="font-bold">Fast Deployment</h4>
+                          <p className="text-sm opacity-70">Available for immediate request and pickup within 24 hours.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === "specs" && (
+                  <div className="animate-fadeIn grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {specs.map((spec, i) => (
+                      <div key={i} className="flex justify-between p-4 border-b border-base-200 last:border-0">
+                        <span className="font-medium text-base-content/60">{spec.label}</span>
+                        <span className="font-bold text-base-content">{spec.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {activeTab === "reviews" && (
+                  <div className="animate-fadeIn space-y-8">
+                    {/* Review Form */}
+                    {user ? (
+                      <div className="bg-base-200 p-6 rounded-2xl shadow-inner border border-base-300">
+                        <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+                           Add a Review
+                        </h4>
+                        <form onSubmit={handlePostReview} className="space-y-4">
+                           <div className="flex gap-2">
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                 <button 
+                                    key={s} 
+                                    type="button" 
+                                    onClick={() => setReviewRating(s)}
+                                    className={`btn btn-circle btn-sm ${reviewRating >= s ? "btn-warning" : "btn-ghost"}`}
+                                 >
+                                    <FaStar />
+                                 </button>
+                              ))}
+                           </div>
+                           <textarea
+                              className="textarea textarea-bordered w-full h-24 focus:ring-2 focus:ring-primary/20"
+                              placeholder="Share your experience with this asset..."
+                              required
+                              value={reviewComment}
+                              onChange={(e) => setReviewComment(e.target.value)}
+                           ></textarea>
+                           <button 
+                              type="submit" 
+                              className="btn btn-primary btn-sm rounded-xl px-8"
+                              disabled={reviewMutation.isLoading}
+                           >
+                              Post Review
+                           </button>
+                        </form>
+                      </div>
+                    ) : (
+                      <div className="alert alert-info rounded-2xl">
+                        <span>Please login to share your reviews.</span>
+                      </div>
+                    )}
+
+                    {/* Review List */}
+                    <div className="space-y-6">
+                      {reviews.length === 0 ? (
+                        <div className="text-center py-10 opacity-50">
+                          <FaComments size={48} className="mx-auto mb-2" />
+                          <p>No reviews yet. Be the first to share!</p>
+                        </div>
+                      ) : (
+                        reviews.map((r) => (
+                          <div key={r._id} className="flex gap-4 p-6 bg-base-100 border border-base-200 rounded-2xl shadow-sm transition-hover hover:shadow-md">
+                            <div className="avatar">
+                              <div className="w-12 h-12 rounded-full border-2 border-primary/20">
+                                <img src={r.userImage || `https://ui-avatars.com/api/?name=${r.userName}`} alt="" />
+                              </div>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h5 className="font-bold text-lg">{r.userName}</h5>
+                                  <div className="flex text-warning text-sm mb-2">
+                                    {[...Array(5)].map((_, i) => (
+                                      <FaStar key={i} className={i < r.rating ? "fill-current" : "opacity-20"} />
+                                    ))}
+                                  </div>
+                                </div>
+                                <span className="text-xs opacity-50">{new Date(r.createdAt).toLocaleDateString()}</span>
+                              </div>
+                              <p className="text-base-content/80 pt-2 italic">"{r.comment}"</p>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Right: Product Info & Request */}
-          <div className="flex flex-col">
-            <div className="mb-6">
-               <div className="flex justify-between items-start mb-2">
-                 <h1 className="text-3xl md:text-4xl font-black text-neutral">{asset.productName}</h1>
-                  <span className={`badge ${asset.productType === "Returnable" ? "bg-green-100 text-green-700 border-0" : "bg-amber-100 text-amber-700 border-0"} badge-lg font-bold py-3`}>
-                    {asset.productType === "Returnable" ? "Returnable" : "Non-Returnable"}
-                  </span>
-               </div>
-               
-               <div className="flex items-center gap-4 text-sm mb-6">
-                 <div className="flex items-center gap-1 text-warning">
-                   <FaStar /> <span className="font-bold text-neutral">4.8</span> <span className="text-gray-400">(24 reviews)</span>
-                 </div>
-                 <span className="text-gray-300">|</span>
-                 <p className="text-gray-500 font-medium">{asset.companyName}</p>
-                 <span className="text-gray-300">|</span>
-                 <p className="text-primary font-bold">Official Asset</p>
-               </div>
+          {/* Right Column: Sticky Request Card */}
+          <div className="lg:col-span-5">
+            <div className="sticky top-24 space-y-6">
+              <div className="bg-base-100 p-8 rounded-[2rem] shadow-2xl border border-base-200 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[100px] -z-10"></div>
+                
+                <header className="mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-bold text-primary uppercase tracking-widest">{asset.companyName}</span>
+                    <div className="flex items-center gap-1 text-warning font-bold">
+                       <FaStar /> 4.8
+                    </div>
+                  </div>
+                  <h1 className="text-4xl font-extrabold text-base-content mb-4">{asset.productName}</h1>
+                  <div className="flex items-center gap-4 text-sm font-medium">
+                    <div className="flex items-center gap-1 text-success">
+                       <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                       Available Now
+                    </div>
+                    <div className="text-base-content/40">|</div>
+                    <div className="flex items-center gap-1 opacity-60">
+                       <FaBox /> {asset.availableQuantity} Items Left
+                    </div>
+                  </div>
+                </header>
 
-               <div className="text-3xl font-bold text-primary mb-6">
-                 High Priority
-                 <span className="text-sm font-normal text-gray-400 ml-2">tier</span>
-               </div>
-            </div>
+                <div className="divider opacity-50"></div>
 
-            {/* Request Form Section */}
-            <div className="card bg-base-100 shadow-xl border border-base-200 p-6 flex-grow">
-               <h3 className="card-title text-lg mb-4">Request This Asset</h3>
-               
-               {user ? (
-                <div className="form-control w-full space-y-4">
-                    <div className="space-y-1">
-                      <label className="label py-0">
-                         <span className="label-text font-semibold">Purpose of Request</span>
-                         <span className="label-text-alt text-error">* Required</span>
+                {/* Request Form */}
+                <div className="space-y-6">
+                  {user ? (
+                    <div className="form-control">
+                      <label className="label">
+                        <span className="label-text font-bold text-lg">Justification Note</span>
+                        <span className="label-text-alt text-error font-semibold">Required</span>
                       </label>
                       <textarea
-                        className="textarea textarea-bordered w-full h-28 focus:border-primary resize-none"
-                        placeholder="Please briefly explain why you need this asset..."
+                        className="textarea textarea-bordered h-40 rounded-2xl focus:ring-4 focus:ring-primary/10 transition-all text-lg"
+                        placeholder="Provide a brief explanation for this request..."
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
                         disabled={isOutOfStock}
                       ></textarea>
                     </div>
+                  ) : (
+                    <div className="alert alert-warning rounded-2xl shadow-inner border-none bg-warning/20 text-warning-content font-bold">
+                      <FaInfoCircle size={20} />
+                      <span>Action restricted to authenticated personnel.</span>
+                    </div>
+                  )}
 
-                    <button
-                      onClick={handleRequest}
-                      className="btn btn-primary btn-lg w-full rounded-field shadow-lg shadow-primary/20"
-                      disabled={isOutOfStock || requestLoading}
-                    >
-                      {requestLoading ? <span className="loading loading-spinner"></span> : isOutOfStock ? "Unavailable" : "Submit Request"}
-                    </button>
-                    {!isOutOfStock && <p className="text-xs text-center text-gray-400">Approval usually takes 24-48 hours.</p>}
+                  <div className="pt-2">
+                    {user ? (
+                      <button
+                        onClick={handleRequest}
+                        className={`btn btn-primary btn-lg w-full rounded-2xl font-black text-xl shadow-xl shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 ${
+                          requestLoading ? "loading" : ""
+                        }`}
+                        disabled={isOutOfStock || requestLoading}
+                      >
+                        {isOutOfStock ? "ALLOCATION PAUSED" : "SUBMIT REQUEST"}
+                      </button>
+                    ) : (
+                      <Link
+                        to="/login"
+                        state={{ from: `/assets/${id}` }}
+                        className="btn btn-primary btn-lg w-full rounded-2xl font-black text-xl shadow-xl shadow-primary/30"
+                      >
+                        LOG IN TO REQUEST
+                      </Link>
+                    )}
+                  </div>
+                  
+                  <p className="text-xs text-center text-base-content/40 font-medium">
+                    * Standard company policy applies to all {asset.productType.toLowerCase()} requests. 
+                    Approval typically takes 2-4 business hours.
+                  </p>
                 </div>
-              ) : (
-                <div className="text-center py-6">
-                   <div className="mx-auto bg-base-200 w-16 h-16 rounded-full flex items-center justify-center mb-4 text-2xl">🔒</div>
-                   <h4 className="font-bold mb-2">Login Required</h4>
-                   <p className="text-gray-500 text-sm mb-6">You must be logged in as an employee to request assets.</p>
-                   <button
-                        onClick={() => navigate("/login", { state: { from: `/assets/${id}` } })}
-                        className="btn btn-primary btn-block rounded-field"
-                    >
-                        Login to Continue
-                    </button>
-                </div>
-              )}
+              </div>
+
             </div>
           </div>
+
         </div>
 
-        {/* Content Tabs */}
-        <div className="mb-20">
-          <div className="flex gap-8 border-b border-base-200 mb-8 overflow-x-auto">
-            {["overview", "specifications", "reviews"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-4 px-2 font-bold capitalize transition-colors relative whitespace-nowrap ${
-                  activeTab === tab ? "text-primary" : "text-gray-400 hover:text-neutral"
-                }`}
-              >
-                {tab}
-                {activeTab === tab && (
-                  <motion.div layoutId="underline" className="absolute bottom-0 left-0 w-full h-0.5 bg-primary" />
-                )}
-              </button>
-            ))}
+        {/* Related Items Section */}
+        <section className="mt-24">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <h2 className="text-4xl font-black text-base-content">Related Assets</h2>
+              <div className="h-1.5 w-24 bg-primary mt-3 rounded-full"></div>
+            </div>
+            <Link to="/assets" className="btn btn-ghost font-bold text-primary">View All <FaArrowRight size={12} /></Link>
           </div>
 
-          <div className="min-h-[200px]">
-            {activeTab === "overview" && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="prose max-w-none">
-                 <p className="text-xl text-neutral font-medium mb-4">
-                   Premium {asset.productType.toLowerCase()} designed for professional productivity.
-                 </p>
-                 <p className="text-gray-500 leading-relaxed mb-4">
-                   This {asset.productName} represents the standard for corporate assets provided by {asset.companyName}. 
-                   It comes with full warranty support and is maintained by our IT department to ensure optimal performance.
-                   Suitable for everyday office tasks, remote work, and specialized projects.
-                 </p>
-                 <ul className="space-y-2 mt-4 text-gray-600">
-                    <li className="flex items-center gap-2"><FaCheckCircle className="text-success" /> Verified working condition</li>
-                    <li className="flex items-center gap-2"><FaCheckCircle className="text-success" /> Latest software updates installed</li>
-                    <li className="flex items-center gap-2"><FaCheckCircle className="text-success" /> Sanitized and packaged</li>
-                 </ul>
-              </motion.div>
-            )}
-
-            {activeTab === "specifications" && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid md:grid-cols-2 gap-6 bg-base-100 p-8 rounded-2xl border border-base-200">
-                 {specs.map((item, idx) => (
-                   <div key={idx} className="flex justify-between border-b border-base-200 pb-3 last:border-0 last:pb-0">
-                      <span className="font-semibold text-gray-500">{item.label}</span>
-                      <span className="font-bold text-neutral">{item.value}</span>
-                   </div>
-                 ))}
-              </motion.div>
-            )}
-
-            {activeTab === "reviews" && (
-               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-                  {reviews.map((review) => (
-                    <div key={review.id} className="flex gap-4 p-6 rounded-2xl bg-base-200/50">
-                       <div className="avatar placeholder">
-                          <div className="bg-primary text-primary-content rounded-full w-12">
-                             <span>{review.name.charAt(0)}</span>
-                          </div>
-                       </div>
-                       <div>
-                          <div className="flex items-center gap-2 mb-1">
-                             <h4 className="font-bold">{review.name}</h4>
-                             <span className="text-xs text-gray-400">• {review.date}</span>
-                          </div>
-                          <div className="flex text-warning text-sm mb-2">
-                             {[...Array(5)].map((_, i) => (
-                               <FaStar key={i} className={i < review.rating ? "" : "text-gray-300"} />
-                             ))}
-                          </div>
-                          <p className="text-gray-600">{review.comment}</p>
-                       </div>
-                    </div>
-                  ))}
-               </motion.div>
-            )}
-          </div>
-        </div>
-
-        {/* Related Assets */}
-        <div className="mb-12">
-           <h3 className="text-2xl font-bold mb-8">Related Assets</h3>
-           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {[1, 2, 3].map((item) => (
-                 <div key={item} className="card bg-base-100 shadow-lg border border-base-200 hover:shadow-xl transition-all">
-                    <figure className="h-40 bg-gray-100 relative">
-                       <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl">
-                         <FaBoxOpen />
-                       </div>
-                    </figure>
-                    <div className="card-body p-4">
-                       <h4 className="font-bold text-lg mb-1">Related Asset #{item}</h4>
-                       <p className="text-xs text-gray-500 mb-4">Similar to {asset.productName}</p>
-                       <button className="btn btn-outline btn-sm w-full rounded-field">View Details</button>
-                    </div>
-                 </div>
+          {relatedPending ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+               {[...Array(4)].map((_, i) => (
+                 <div key={i} className="h-80 bg-base-100 rounded-3xl animate-pulse"></div>
+               ))}
+            </div>
+          ) : related.length === 0 ? (
+            <div className="bg-base-100 p-20 rounded-[3rem] text-center border-2 border-dashed border-base-300">
+               <p className="text-xl opacity-40 font-bold italic">No complementary assets found in this segment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {related.map((item) => (
+                <AssetCard 
+                  key={item._id} 
+                  asset={item} 
+                  detailsLink={`/assets/${item._id}`}
+                />
               ))}
-           </div>
-        </div>
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );

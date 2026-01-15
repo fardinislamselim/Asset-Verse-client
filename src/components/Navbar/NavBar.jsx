@@ -21,8 +21,17 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const { data: dbUser = {}, isLoading: isRoleLoading } = useQuery({
     queryKey: ["user-role", user?.email],
@@ -91,9 +100,9 @@ const Navbar = () => {
     <>
       {navItem("/", "Home")}
       {navItem("/assets", "Available Assets")}
-      {hashNavItem("/#about", "About")}
-      {hashNavItem("/#contact", "Contact")}
-      {navItem("/register", "Join Free")}
+      {navItem("/about", "About")}
+      {navItem("/contact", "Contact")}
+      {navItem("/support", "Support")}
     </>
   );
 
@@ -134,8 +143,12 @@ const Navbar = () => {
   const profileDropdownItems = role === "hr" ? hrMenu : employeeMenu;
 
   return (
-    <div className="sticky top-0 z-50 w-full backdrop-blur-md bg-base-100/80 border-b border-base-200 transition-all duration-300">
-      <Container className="navbar py-2 lg:py-4">
+    <div className={`fixed top-0 z-50 w-full transition-all duration-500 ${
+      isScrolled 
+      ? "bg-base-100/70 backdrop-blur-xl border-b border-base-200 shadow-lg py-0" 
+      : "bg-transparent py-2"
+    }`}>
+      <Container className={`navbar transition-all duration-500 ${isScrolled ? "min-h-[4rem]" : "min-h-[5rem]"}`}>
         {/* Navbar Start: Logo */}
         <div className="navbar-start">
           <Link to="/" className="flex items-center gap-3 group">

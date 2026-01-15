@@ -19,7 +19,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-[65vh] lg:h-[70vh] flex items-center bg-gradient-to-br from-base-100 via-base-100 to-base-200 overflow-hidden border-b border-base-200">
+    <section className="relative min-h-[65vh] lg:h-[80vh] flex items-center pt-20 lg:pt-32 bg-gradient-to-br from-base-100 via-base-100 to-base-200 overflow-hidden border-b border-base-200">
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-secondary/5 rounded-full blur-3xl"></div>

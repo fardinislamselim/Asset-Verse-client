@@ -42,7 +42,7 @@ const Register = () => {
   }
 
   return (
-    <div className="bg-base-100">
+    <div className="bg-base-100 pt-24 lg:pt-32 pb-20">
       {" "}
       <Container className="flex flex-col lg:flex-row justify-between h-full ">
 

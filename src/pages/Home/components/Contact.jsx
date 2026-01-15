@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import toast from "react-hot-toast";
 
 const Contact = () => {
   return (
@@ -12,16 +12,24 @@ const Contact = () => {
           their resources efficiently.
         </p>
 
-        <div className="flex flex-col md:flex-row gap-6 justify-center max-w-lg mx-auto">
+        <form 
+          className="flex flex-col md:flex-row gap-6 justify-center max-w-lg mx-auto"
+          onSubmit={(e) => {
+            e.preventDefault();
+            toast.success("We've received your request!");
+            e.target.reset();
+          }}
+        >
           <input
             type="email"
             placeholder="Enter your email"
             className="input input-lg text-base-content w-full rounded-field"
+            required
           />
-          <Link to="/register" className="btn btn-secondary btn-lg rounded-field px-8">
+          <button type="submit" className="btn btn-secondary btn-lg rounded-field px-8">
             Get Started
-          </Link>
-        </div>
+          </button>
+        </form>
         <p className="mt-8 text-sm opacity-75">
           No credit card required for basic plan.
         </p>
